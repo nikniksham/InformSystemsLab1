@@ -10,6 +10,7 @@ import jakarta.persistence.Persistence;
 import jakarta.persistence.Query;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @ApplicationScoped
 public class VehicleManager {
@@ -93,6 +94,19 @@ public class VehicleManager {
         } catch (Exception ex) {
             em.close();
             return false;
+        }
+    }
+
+    public List<Vehicle> getAllVehicle() {
+        EntityManager em = emf.createEntityManager();
+        Query query = em.createQuery("SELECT u FROM Vehicle u");
+        try {
+            List<Vehicle> resultList = (List<Vehicle>) query.getResultList();
+            em.close();
+            return resultList;
+        } catch (Exception ex) {
+            em.close();
+            return null;
         }
     }
 }

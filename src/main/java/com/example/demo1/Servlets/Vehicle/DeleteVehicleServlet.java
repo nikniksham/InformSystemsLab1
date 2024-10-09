@@ -5,6 +5,7 @@ import com.example.demo1.DBObjects.Coordinates;
 import com.example.demo1.DBObjects.Users;
 import com.example.demo1.DBObjects.Vehicle;
 import com.example.demo1.ENUMs.FuelType;
+import com.example.demo1.ENUMs.TypeOfOperation;
 import com.example.demo1.ENUMs.VehicleType;
 import com.example.demo1.Managers.CoordinatesManager;
 import com.example.demo1.Managers.InformationManager;
@@ -49,7 +50,7 @@ public class DeleteVehicleServlet extends HttpServlet {
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("vehicle/deleteVehicle.jsp");
         Map<Class, Object> result = standardChecks(request, response, requestDispatcher);
 
-        Users users = (Users) result.get(Users.class);
+        Users user = (Users) result.get(Users.class);
         Vehicle vehicle = (Vehicle) result.get(Vehicle.class);
         Coordinates coordinates = (Coordinates) result.get(Coordinates.class);
 
@@ -62,6 +63,7 @@ public class DeleteVehicleServlet extends HttpServlet {
 
         if (vehicleManager.deleteVehicleById(vehicle.getId())) {
             if (coordinatesManager.deleteCoordinatesById(coordinates.getId())) {
+                informationManager.createInformation(user.getId(), vehicle.getId(), TypeOfOperation.DELETE);
                 response.sendRedirect(commonFunc.getLink("/"));
             } else {
                 error = "Ошибка при удалении координат";

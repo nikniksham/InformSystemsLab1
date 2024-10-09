@@ -1,9 +1,12 @@
 package com.example.demo1.Servlets.Vehicle;
 
 import com.example.demo1.CommonFunc;
+import com.example.demo1.DBObjects.Users;
 import com.example.demo1.ENUMs.FuelType;
+import com.example.demo1.ENUMs.TypeOfOperation;
 import com.example.demo1.ENUMs.VehicleType;
 import com.example.demo1.Managers.CoordinatesManager;
+import com.example.demo1.Managers.InformationManager;
 import com.example.demo1.Managers.VehicleManager;
 import jakarta.inject.Inject;
 import jakarta.servlet.RequestDispatcher;
@@ -22,6 +25,8 @@ public class CreateVehicleServlet extends HttpServlet {
     @Inject
     CoordinatesManager coordinatesManager;
     @Inject
+    InformationManager informationManager;
+    @Inject
     CommonFunc commonFunc;
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -34,6 +39,7 @@ public class CreateVehicleServlet extends HttpServlet {
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         commonFunc.checkAndRedirectFalse(request, response);
+        Users user = commonFunc.getAuthorizedUser(request, response);
         String error = null;
         double x_coords = 0, capacity = 0;
         float enginePower = 0;
@@ -112,6 +118,7 @@ public class CreateVehicleServlet extends HttpServlet {
             if (coordinates_id != null) {
                 Long vehicle_id = vehicleManager.createNewVehicle(name, coordinates_id, vehicleType, enginePower, numberOfWheels, capacity, distanceTravelled, fuelConsumption, fuelType);
                 if (vehicle_id != null) {
+                    informationManager.createInformation(user.getId(), vehicle_id, TypeOfOperation.CREATE);
                     request.setAttribute("error", "Вехикл успешно создан");
                     doGet(request, response);
                 } else {

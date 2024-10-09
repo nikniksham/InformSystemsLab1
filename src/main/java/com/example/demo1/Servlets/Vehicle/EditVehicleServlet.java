@@ -5,6 +5,7 @@ import com.example.demo1.DBObjects.Coordinates;
 import com.example.demo1.DBObjects.Users;
 import com.example.demo1.DBObjects.Vehicle;
 import com.example.demo1.ENUMs.FuelType;
+import com.example.demo1.ENUMs.TypeOfOperation;
 import com.example.demo1.ENUMs.VehicleType;
 import com.example.demo1.Managers.CoordinatesManager;
 import com.example.demo1.Managers.InformationManager;
@@ -49,7 +50,7 @@ public class EditVehicleServlet extends HttpServlet {
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("vehicle/editVehicle.jsp");
         Map<Class, Object> result = standardChecks(request, response, requestDispatcher);
 
-        Users users = (Users) result.get(Users.class);
+        Users user = (Users) result.get(Users.class);
         Vehicle vehicle = (Vehicle) result.get(Vehicle.class);
         Coordinates coordinates = (Coordinates) result.get(Coordinates.class);
 
@@ -136,6 +137,7 @@ public class EditVehicleServlet extends HttpServlet {
         if (error == null) {
             if (coordinatesManager.editCoordinatesById(coordinates.getId(), x_coords, y_coords)) {
                 if (vehicleManager.editVehicleById(vehicle.getId(), name, vehicleType, enginePower, numberOfWheels, capacity, distanceTravelled, fuelConsumption, fuelType)) {
+                    informationManager.createInformation(user.getId(), vehicle.getId(), TypeOfOperation.CHANGE);
                     request.setAttribute("error", "Вехикл успешно изменён");
                     doGet(request, response);
                 } else {
