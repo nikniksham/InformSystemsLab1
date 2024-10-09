@@ -15,6 +15,7 @@
 <a href="logout">Logout</a><br>
 <a href="createVehicle">CreateVehicle</a><br>
 <a href="editVehicle?vehicle_id=12">editVehicle</a><br>
+<a href="deleteVehicle?vehicle_id=15">deleteVehicle</a><br>
 <jsp:include page="/shablons/footer.jsp"/>
 </body>
 </html>

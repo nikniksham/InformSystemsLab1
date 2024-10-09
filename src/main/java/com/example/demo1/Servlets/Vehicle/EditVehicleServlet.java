@@ -53,6 +53,11 @@ public class EditVehicleServlet extends HttpServlet {
         Vehicle vehicle = (Vehicle) result.get(Vehicle.class);
         Coordinates coordinates = (Coordinates) result.get(Coordinates.class);
 
+        if (request.getAttribute("error") != null) {
+            request.setAttribute("error", "пошёл нахуй");
+            doGet(request, response);
+        }
+
         String error = null;
         double x_coords = 0, capacity = 0;
         float enginePower = 0;
@@ -145,29 +150,6 @@ public class EditVehicleServlet extends HttpServlet {
         doGet(request, response);
     }
 
-    public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        RequestDispatcher requestDispatcher = request.getRequestDispatcher("vehicle/editVehicle.jsp");
-        Map<Class, Object> result = standardChecks(request, response, requestDispatcher);
-//
-//        Users users = (Users) result.get(Users.class);
-//        Vehicle vehicle = (Vehicle) result.get(Vehicle.class);
-//        Coordinates coordinates = (Coordinates) result.get(Coordinates.class);
-//
-//        String error = null;
-//
-//        if (vehicleManager.deleteVehicleById(vehicle.getId())) {
-//            if (coordinatesManager.deleteCoordinatesById(coordinates.getId())) {
-//                response.sendRedirect(commonFunc.getLink("/"));
-//            } else {
-//                error = "Ошибка при удалении координат";
-//            }
-//        } else {
-//            error = "Ошибка при удалении вехикла";
-//        }
-
-        response.sendRedirect(commonFunc.getLink("/"));
-    }
-
     private void setAttributes(HttpServletRequest request, Vehicle vehicle, Coordinates coordinates) {
         request.setAttribute("listVehicleTypes", VehicleType.values());
         request.setAttribute("listFuelTypes", FuelType.values());
@@ -187,6 +169,7 @@ public class EditVehicleServlet extends HttpServlet {
         commonFunc.checkAndRedirectFalse(request, response);
         setAttributes(request, new Vehicle(), new Coordinates());
         Users user = commonFunc.getAuthorizedUser(request, response);
+
         if (user == null) {
             response.sendRedirect(commonFunc.getLink("/login"));
         }
@@ -205,17 +188,22 @@ public class EditVehicleServlet extends HttpServlet {
             requestDispatcher.forward(request, response);
         }
 
-        if (!(user.getStatus() == 2 || informationManager.checkUserIsAuthor(user.getId(), vehicle.getId()))) {
-            request.setAttribute("error", "Недостаточно прав для редактирования вехикла");
-            requestDispatcher.forward(request, response);
+        if (user != null && vehicle != null) {
+            if (!(user.getStatus() == 2 || informationManager.checkUserIsAuthor(user.getId(), vehicle.getId()))) {
+                request.setAttribute("error", "Недостаточно прав для редактирования вехикла");
+                requestDispatcher.forward(request, response);
+            }
         }
 
-        Coordinates coordinates = coordinatesManager.getCoordinatesById(vehicle.getCoordinates_id());
+        Coordinates coordinates = null;
+        if (vehicle != null) {
+            coordinates = coordinatesManager.getCoordinatesById(vehicle.getCoordinates_id());
+        }
 
         Map<Class, Object> result = new HashMap<>();
-        result.put(user.getClass(), user);
-        result.put(vehicle.getClass(), vehicle);
-        result.put(coordinates.getClass(), coordinates);
+        result.put(Users.class, user);
+        result.put(Vehicle.class, vehicle);
+        result.put(Coordinates.class, coordinates);
 
         return result;
     }

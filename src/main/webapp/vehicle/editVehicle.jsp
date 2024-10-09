@@ -71,10 +71,6 @@
   </label><br>
   <button type="submit">Изменить вехикл</button>
 </form>
-<form:form method="DELETE">
-  <button type="submit">Удалить вехикл 1</button>
-  <input type="submit" value="Удалить вехикл 2"/>
-</form:form>
 <%
   out.println((request.getAttribute("error") == null) ? "" : request.getAttribute("error"));
 %>
