@@ -24,13 +24,13 @@ public class LoginServlet extends HttpServlet {
     CommonFunc commonFunc;
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        commonFunc.checkAndRedirect(request, response);
+        commonFunc.redirectIfAuthorized(request, response);
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("auth/login.jsp");
         requestDispatcher.forward(request, response);
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        commonFunc.checkAndRedirect(request, response);
+        commonFunc.redirectIfAuthorized(request, response);
         Long result = usersManager.loginUser(request.getParameter("login"), request.getParameter("password"));
         if (result != null) {
             String new_code = tokenManager.createNewAccessToken(result);

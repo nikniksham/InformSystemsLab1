@@ -4,9 +4,7 @@ import com.example.demo1.CommonFunc;
 import com.example.demo1.DBObjects.Coordinates;
 import com.example.demo1.DBObjects.Users;
 import com.example.demo1.DBObjects.Vehicle;
-import com.example.demo1.ENUMs.FuelType;
 import com.example.demo1.ENUMs.TypeOfOperation;
-import com.example.demo1.ENUMs.VehicleType;
 import com.example.demo1.Managers.CoordinatesManager;
 import com.example.demo1.Managers.InformationManager;
 import com.example.demo1.Managers.VehicleManager;
@@ -80,7 +78,7 @@ public class DeleteVehicleServlet extends HttpServlet {
     }
 
     private Map<Class, Object> standardChecks(HttpServletRequest request, HttpServletResponse response, RequestDispatcher requestDispatcher) throws IOException, ServletException {
-        commonFunc.checkAndRedirectFalse(request, response);
+        commonFunc.redirectIfNotAuthorized(request, response);
         setAttributes(request, new Vehicle(), new Coordinates());
         Users user = commonFunc.getAuthorizedUser(request, response);
         if (user == null) {

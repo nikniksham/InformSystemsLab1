@@ -26,14 +26,16 @@ public class CommonFunc {
         return usersManager.getUserById(tokenManager.getUserId(request.getCookies()));
     }
 
-    public void checkAndRedirect(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    // Redirect if user is authorized
+    public void redirectIfAuthorized(HttpServletRequest request, HttpServletResponse response) throws IOException {
         boolean res = tokenManager.userConnectionValid(request.getCookies());
         if (res) {
             response.sendRedirect(baza);
         }
     }
 
-    public void checkAndRedirectFalse(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    // Redirect if user is NOT authorized
+    public void redirectIfNotAuthorized(HttpServletRequest request, HttpServletResponse response) throws IOException {
         boolean res = tokenManager.userConnectionValid(request.getCookies());
         if (!res) {
             response.sendRedirect(baza);

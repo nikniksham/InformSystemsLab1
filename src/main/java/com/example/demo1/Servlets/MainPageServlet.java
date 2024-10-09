@@ -24,7 +24,8 @@ public class MainPageServlet extends HttpServlet {
     CoordinatesManager coordinatesManager;
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        Users user = commonFunc.getAuthorizedUser(request, response);
+//        commonFunc.redirectIfNotAuthorized(request, response);
+//        Users user = commonFunc.getAuthorizedUser(request, response);
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("mainPage.jsp");
         request.setAttribute("vehicleList", vehicleManager.getAllVehicle());
         requestDispatcher.forward(request, response);
