@@ -7,6 +7,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import jakarta.persistence.Query;
 
 import java.sql.Timestamp;
 
@@ -40,6 +41,58 @@ public class VehicleManager {
         } catch (Exception e) {
             em.close();
             return null;
+        }
+    }
+
+    public Vehicle getVehicleById(long id) {
+        EntityManager em = emf.createEntityManager();
+        Query query = em.createQuery("SELECT u FROM Vehicle u WHERE u.id = :id").setParameter("id", id);
+        try {
+            Vehicle vehicle = (Vehicle) query.getSingleResult();
+            em.close();
+            return vehicle;
+        } catch (Exception ex) {
+            em.close();
+            return null;
+        }
+    }
+
+    public boolean editVehicleById(long vehicle_id, String name, VehicleType vehicleType, float enginePower, int numberOfWheels, double capacity, long distanceTravelled, long fuelConsumption, FuelType fuelType) {
+        Vehicle vehicle = getVehicleById(vehicle_id);
+        if (vehicle != null) {
+            EntityManager em = emf.createEntityManager();
+            try {
+                em.getTransaction().begin();
+                vehicle.setName(name);
+                vehicle.setVehicleType_id(vehicleType.getId());
+                vehicle.setEnginePower(enginePower);
+                vehicle.setNumberOfWheels(numberOfWheels);
+                vehicle.setCapacity(capacity);
+                vehicle.setDistanceTravelled(distanceTravelled);
+                vehicle.setFuelConsumption(fuelConsumption);
+                vehicle.setFuelType_id(fuelType.getId());
+                em.merge(vehicle);
+                em.getTransaction().commit();
+                em.close();
+                return true;
+            } catch (Exception e) {
+                return false;
+            }
+        }
+        return false;
+    }
+
+    public boolean deleteVehicleById(long id) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            em.getTransaction().begin();
+            em.createQuery("DELETE FROM Vehicle WHERE id = :id").setParameter("id", id).executeUpdate();
+            em.getTransaction().commit();
+            em.close();
+            return true;
+        } catch (Exception ex) {
+            em.close();
+            return false;
         }
     }
 }

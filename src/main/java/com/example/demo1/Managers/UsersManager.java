@@ -17,6 +17,19 @@ public class UsersManager {
 
     public UsersManager() throws NoSuchAlgorithmException {}
 
+    public Users getUserById(long id) {
+        EntityManager em = emf.createEntityManager();
+        Query query = em.createQuery("SELECT u FROM Users u WHERE u.id = :id").setParameter("id", id);
+        try {
+            Users user = (Users) query.getSingleResult();
+            em.close();
+            return user;
+        } catch (Exception ex) {
+            em.close();
+            return null;
+        }
+    }
+
     public boolean checkLoginDontExists(String login) {
         EntityManager em = emf.createEntityManager();
         try {

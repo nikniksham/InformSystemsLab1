@@ -1,6 +1,8 @@
 package com.example.demo1;
 
+import com.example.demo1.DBObjects.Users;
 import com.example.demo1.Managers.TokenManager;
+import com.example.demo1.Managers.UsersManager;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,10 +14,16 @@ import java.io.IOException;
 public class CommonFunc {
     @Inject
     private TokenManager tokenManager;
+    @Inject
+    private UsersManager usersManager;
     private String baza = "/demo1";
 
     public String getLink(String direct) {
         return baza + direct;
+    }
+
+    public Users getAuthorizedUser(HttpServletRequest request, HttpServletResponse response) {
+        return usersManager.getUserById(tokenManager.getUserId(request.getCookies()));
     }
 
     public void checkAndRedirect(HttpServletRequest request, HttpServletResponse response) throws IOException {

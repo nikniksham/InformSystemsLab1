@@ -18,8 +18,7 @@ public class TokenManager {
 
     public String createNewAccessToken(long user_id) {
         EntityManager em = emf.createEntityManager();
-        EntityTransaction transaction = em.getTransaction();
-        transaction.begin();
+        em.getTransaction().begin();
 
         Tokens new_token = new Tokens();
         new_token.setUser_id(user_id);
@@ -28,7 +27,7 @@ public class TokenManager {
         new_token.setCreationDate(new Timestamp(new java.util.Date().getTime()));
 
         em.persist(new_token);
-        transaction.commit();
+        em.getTransaction().commit();
         em.close();
 
         return code;
@@ -105,5 +104,23 @@ public class TokenManager {
             return checkCodeExistsAndExpiration(code);
         }
         return false;
+    }
+
+    public Long getUserId(Cookie[] cookies) {
+        for (Cookie c : cookies) {
+            if (c.getName().equals("avtoritet")) {
+                EntityManager em = emf.createEntityManager();
+                Query query = em.createQuery("SELECT u FROM Tokens u WHERE u.code = :code").setParameter("code", c.getValue());
+                try {
+                    Tokens token = (Tokens) query.getSingleResult();
+                    em.close();
+                    return token.getUser_id();
+                } catch (Exception ex) {
+                    em.close();
+                    return null;
+                }
+            }
+        }
+        return null;
     }
 }

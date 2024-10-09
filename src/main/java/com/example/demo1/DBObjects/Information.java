@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.ZonedDateTime;
+import java.sql.Timestamp;
 
 @Entity
 @Table
@@ -17,6 +17,6 @@ public class Information implements java.io.Serializable {
     private long id;
     private long user_id;
     private long vehicle_id;
-    private ZonedDateTime modifDate;
+    private Timestamp modifDate;
     private int typeOfOperation; // REFERENCES to java ENUM TypeOfOperation
 }

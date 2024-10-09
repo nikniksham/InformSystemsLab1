@@ -13,6 +13,8 @@
 <a href="login">Login</a><br>
 <a href="register">Register</a><br>
 <a href="logout">Logout</a><br>
+<a href="createVehicle">CreateVehicle</a><br>
+<a href="editVehicle?vehicle_id=12">editVehicle</a><br>
 <jsp:include page="/shablons/footer.jsp"/>
 </body>
 </html>
