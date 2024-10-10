@@ -20,12 +20,9 @@ public class MainPageServlet extends HttpServlet {
     CommonFunc commonFunc;
     @Inject
     VehicleManager vehicleManager;
-    @Inject
-    CoordinatesManager coordinatesManager;
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-//        commonFunc.redirectIfNotAuthorized(request, response);
-//        Users user = commonFunc.getAuthorizedUser(request, response);
+        commonFunc.setUserIfAuthorized(request, response);
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("mainPage.jsp");
         request.setAttribute("vehicleList", vehicleManager.getAllVehicle());
         requestDispatcher.forward(request, response);

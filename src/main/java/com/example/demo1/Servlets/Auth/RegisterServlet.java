@@ -21,12 +21,14 @@ public class RegisterServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         commonFunc.redirectIfAuthorized(request, response);
+        commonFunc.setUserIfAuthorized(request, response);
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("auth/register.jsp");
         requestDispatcher.forward(request, response);
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         commonFunc.redirectIfAuthorized(request, response);
+        commonFunc.setUserIfAuthorized(request, response);
         String error = null;
         if (usersManager.checkLoginDontExists(request.getParameter("login"))) {
             error = "Login already exists";

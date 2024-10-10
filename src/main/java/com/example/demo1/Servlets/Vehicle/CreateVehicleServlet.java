@@ -31,6 +31,7 @@ public class CreateVehicleServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         commonFunc.redirectIfNotAuthorized(request, response);
+        commonFunc.setUserIfAuthorized(request, response);
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("vehicle/createVehicle.jsp");
         request.setAttribute("listVehicleTypes", VehicleType.values());
         request.setAttribute("listFuelTypes", FuelType.values());
@@ -39,6 +40,7 @@ public class CreateVehicleServlet extends HttpServlet {
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         commonFunc.redirectIfNotAuthorized(request, response);
+        commonFunc.setUserIfAuthorized(request, response);
         Users user = commonFunc.getAuthorizedUser(request, response);
         String error = null;
         double x_coords = 0, capacity = 0;

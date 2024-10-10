@@ -26,6 +26,10 @@ public class CommonFunc {
         return usersManager.getUserById(tokenManager.getUserId(request.getCookies()));
     }
 
+    public void setUserIfAuthorized(HttpServletRequest request, HttpServletResponse response) {
+        request.setAttribute("user", getAuthorizedUser(request, response));
+    }
+
     // Redirect if user is authorized
     public void redirectIfAuthorized(HttpServletRequest request, HttpServletResponse response) throws IOException {
         boolean res = tokenManager.userConnectionValid(request.getCookies());

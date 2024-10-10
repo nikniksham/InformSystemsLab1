@@ -1,5 +1,14 @@
-function sortTable(columnIndex, isNum, lowerToMax) {
-    let table, rows, switching, i, x, y, shouldSwitch, z1, z2;
+let recentColumn = null;
+
+function sortTable(columnIndex, typeColumn) {
+    let table, rows, switching, i, x, y, shouldSwitch, z1, z2, lowerToMax;
+    if (recentColumn === columnIndex) {
+        lowerToMax = true;
+        recentColumn = null;
+    } else {
+        lowerToMax = false;
+        recentColumn = columnIndex;
+    }
     table = document.getElementById("data-table");
     switching = true;
 
@@ -12,12 +21,15 @@ function sortTable(columnIndex, isNum, lowerToMax) {
             x = rows[i].getElementsByTagName("td")[columnIndex];
             y = rows[i + 1].getElementsByTagName("td")[columnIndex];
 
-            if (!isNum) {
-                z1 = x.innerHTML
-                z2 = y.innerHTML
-            } else {
+            if (typeColumn === 0) {
+                z1 = x.innerHTML.toLowerCase()
+                z2 = y.innerHTML.toLowerCase()
+            } else if (typeColumn === 1) {
                 z1 = parseFloat(x.innerHTML)
                 z2 = parseFloat(y.innerHTML)
+            } else if (typeColumn === 2) {
+                z1 = new Date(x.innerHTML).getTime()
+                z2 = new Date(y.innerHTML).getTime()
             }
 
             if ((lowerToMax && z1 > z2) || (!lowerToMax && z1 < z2)) {

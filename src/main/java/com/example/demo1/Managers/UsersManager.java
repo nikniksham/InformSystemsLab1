@@ -17,7 +17,8 @@ public class UsersManager {
 
     public UsersManager() throws NoSuchAlgorithmException {}
 
-    public Users getUserById(long id) {
+    public Users getUserById(Long id) {
+        if (id == null) {return null;}
         EntityManager em = emf.createEntityManager();
         Query query = em.createQuery("SELECT u FROM Users u WHERE u.id = :id").setParameter("id", id);
         try {
