@@ -6,16 +6,13 @@
 <body>
 <jsp:include page="/shablons/header.jsp"/>
 <form method="post">
-  <label>Login:
+  <label>Логин:
     <input type="text" name="login" value='<%=((request.getParameter("login") == null) ? "" : request.getParameter("login"))%>' /><br/>
   </label>
-  <label>Password:
+  <label>Пароль:
     <input type="text" name="password"><br/>
   </label>
-  <button type="submit">Тык</button>
-</form>
-<form action="/demo1/register">
-  <input type="submit" value="Зарегистрироваться"/>
+  <button type="submit">Войти</button>
 </form>
 <%
   out.println((request.getAttribute("error") == null) ? "" : request.getAttribute("error"));

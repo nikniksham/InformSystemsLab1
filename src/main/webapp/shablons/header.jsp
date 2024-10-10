@@ -6,11 +6,11 @@
         <%
             if (request.getAttribute("user") != null) {
                 Users user = (Users) request.getAttribute("user");
-                out.println("<a href=\"#\"> Пользователь: " + user.getLogin() + "</a>");
+                out.println("<a href=\"/demo1/personalInformation\"> Пользователь: " + user.getLogin() + "</a>");
             } else {
                 out.println("<a href=\"/demo1/login\">Войти</a> / <a href=\"/demo1/register\">Зарегистрироваться</a>");
             }
         %>
     </nav>
-    <h1>Добро пожаловать на мой вебсайт</h1>
+<%--    <h1>Добро пожаловать на мой вебсайт</h1>--%>
 </header>

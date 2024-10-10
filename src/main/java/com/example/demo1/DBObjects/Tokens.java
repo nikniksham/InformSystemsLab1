@@ -23,4 +23,8 @@ public class Tokens implements java.io.Serializable {
     private Timestamp creationDate;
     @NonNull
     private String code;
+
+    public boolean checkExpirationDate() {
+        return (new Timestamp(new java.util.Date().getTime()).getTime() - this.getCreationDate().getTime() < 60 * 60 * 1000);
+    }
 }

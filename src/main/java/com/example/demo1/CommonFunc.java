@@ -26,7 +26,7 @@ public class CommonFunc {
         return usersManager.getUserById(tokenManager.getUserId(request.getCookies()));
     }
 
-    public void setUserIfAuthorized(HttpServletRequest request, HttpServletResponse response) {
+    public void setAuthorizedUser(HttpServletRequest request, HttpServletResponse response) {
         request.setAttribute("user", getAuthorizedUser(request, response));
     }
 

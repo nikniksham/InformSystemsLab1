@@ -51,11 +51,8 @@ public class TokenManager {
         Query query = em.createQuery("SELECT u FROM Tokens u WHERE u.code = :code").setParameter("code", code);
         try {
             Tokens token = (Tokens) query.getSingleResult();
-            if (new Timestamp(new java.util.Date().getTime()).getTime() - token.getCreationDate().getTime() < 60 * 60 * 1000) {
-                return true;
-            }
             em.close();
-            return false;
+            return token.checkExpirationDate();
         } catch (Exception ex) {
             em.close();
             return false;
@@ -114,7 +111,9 @@ public class TokenManager {
                 try {
                     Tokens token = (Tokens) query.getSingleResult();
                     em.close();
-                    return token.getUser_id();
+                    if (token.checkExpirationDate()) {
+                        return token.getUser_id();
+                    }
                 } catch (Exception ex) {
                     em.close();
                     return null;

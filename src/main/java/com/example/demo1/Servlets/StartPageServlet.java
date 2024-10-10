@@ -1,7 +1,6 @@
 package com.example.demo1.Servlets;
 
 import com.example.demo1.CommonFunc;
-import com.example.demo1.Managers.VehicleManager;
 import jakarta.inject.Inject;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -12,13 +11,13 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet(name = "startPageServlet", value = "/")
+@WebServlet(name = "startPageServlet", value = "/startPage")
 public class StartPageServlet extends HttpServlet {
     @Inject
     CommonFunc commonFunc;
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        commonFunc.setUserIfAuthorized(request, response);
+        commonFunc.setAuthorizedUser(request, response);
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("startPage.jsp");
         requestDispatcher.forward(request, response);
     }

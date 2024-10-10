@@ -49,9 +49,6 @@
     %>
   </tbody>
 </table>
-<%
-  out.println("<p>" + request.getAttribute("user") + "</p>");
-%>
 <jsp:include page="/shablons/footer.jsp"/>
 </body>
 </html>

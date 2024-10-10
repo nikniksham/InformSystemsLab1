@@ -169,7 +169,7 @@ public class EditVehicleServlet extends HttpServlet {
 
     private Map<Class, Object> standardChecks(HttpServletRequest request, HttpServletResponse response, RequestDispatcher requestDispatcher) throws IOException, ServletException {
         commonFunc.redirectIfNotAuthorized(request, response);
-        commonFunc.setUserIfAuthorized(request, response);
+        commonFunc.setAuthorizedUser(request, response);
         setAttributes(request, new Vehicle(), new Coordinates());
         Users user = commonFunc.getAuthorizedUser(request, response);
 

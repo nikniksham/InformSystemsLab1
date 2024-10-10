@@ -11,7 +11,7 @@
 <h3>ИСУ: 367635</h3>
 <h3>Вариант: 14580</h3>
 <br/>
-<a href="mainPage">MainPage</a><br>
+<a href="mainPage">На главную страницу</a><br>
 <jsp:include page="/shablons/footer.jsp"/>
 </body>
 </html>

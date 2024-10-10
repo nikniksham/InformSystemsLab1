@@ -1,4 +1,4 @@
-package com.example.demo1.Servlets.Auth;
+package com.example.demo1.Servlets.User.Auth;
 
 import com.example.demo1.Managers.UsersManager;
 import com.example.demo1.CommonFunc;
@@ -21,14 +21,14 @@ public class RegisterServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         commonFunc.redirectIfAuthorized(request, response);
-        commonFunc.setUserIfAuthorized(request, response);
-        RequestDispatcher requestDispatcher = request.getRequestDispatcher("auth/register.jsp");
+        commonFunc.setAuthorizedUser(request, response);
+        RequestDispatcher requestDispatcher = request.getRequestDispatcher("user/auth/register.jsp");
         requestDispatcher.forward(request, response);
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         commonFunc.redirectIfAuthorized(request, response);
-        commonFunc.setUserIfAuthorized(request, response);
+        commonFunc.setAuthorizedUser(request, response);
         String error = null;
         if (usersManager.checkLoginDontExists(request.getParameter("login"))) {
             error = "Login already exists";
