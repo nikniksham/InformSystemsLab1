@@ -7,8 +7,8 @@
 <html>
 <head>
   <title>MainPage</title>
-  <link rel="stylesheet" href="css/baza.css">
-  <script src="js/sortScript.js"></script>
+  <link rel="stylesheet" href="/demo1/resources/css/baza.css" type="text/css">
+  <script src="/demo1/resources/js/sortScript.js" type="text/javascript"></script>
 </head>
 <body>
 <jsp:include page="/shablons/header.jsp"/>

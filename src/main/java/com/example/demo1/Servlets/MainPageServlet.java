@@ -21,6 +21,7 @@ public class MainPageServlet extends HttpServlet {
     @Inject
     VehicleManager vehicleManager;
 
+
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         commonFunc.setUserIfAuthorized(request, response);
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("mainPage.jsp");

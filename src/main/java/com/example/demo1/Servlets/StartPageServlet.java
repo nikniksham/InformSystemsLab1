@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet(name = "startPage", value = "/")
+@WebServlet(name = "startPageServlet", value = "/")
 public class StartPageServlet extends HttpServlet {
     @Inject
     CommonFunc commonFunc;
