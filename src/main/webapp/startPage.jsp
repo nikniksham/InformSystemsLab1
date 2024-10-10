@@ -2,12 +2,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>JSP - Hello World</title>
+    <title>Стартовая страничка</title>
 </head>
 <body>
 <jsp:include page="/shablons/header.jsp"/>
 <h1>Сайт сделан рукчами Шамкова Николая Николаевича</h1>
-<h3>p3307, 367635, вариант 14580</h3>
+<h3>Группа: P3307</h3>
+<h3>ИСУ: 367635</h3>
+<h3>Вариант: 14580</h3>
 <br/>
 <a href="mainPage">MainPage</a><br>
 <jsp:include page="/shablons/footer.jsp"/>
