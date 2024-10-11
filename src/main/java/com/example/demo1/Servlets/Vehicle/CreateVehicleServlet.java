@@ -18,7 +18,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet(name = "createVehicle", value = "/vehicle/createVehicle")
+@WebServlet(name = "createVehicle", value = "/createVehicle")
 public class CreateVehicleServlet extends HttpServlet {
     @Inject
     VehicleManager vehicleManager;
@@ -32,7 +32,7 @@ public class CreateVehicleServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         commonFunc.redirectIfNotAuthorized(request, response);
         commonFunc.setAuthorizedUser(request, response);
-        RequestDispatcher requestDispatcher = request.getRequestDispatcher("vehicle/createVehicle.jsp");
+        RequestDispatcher requestDispatcher = request.getRequestDispatcher("/vehicle/createVehicle.jsp");
         request.setAttribute("listVehicleTypes", VehicleType.values());
         request.setAttribute("listFuelTypes", FuelType.values());
         requestDispatcher.forward(request, response);

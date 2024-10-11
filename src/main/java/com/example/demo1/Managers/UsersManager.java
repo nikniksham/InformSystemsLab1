@@ -97,13 +97,36 @@ public class UsersManager {
         }
     }
 
-    public boolean submitAnApplication(long user_id) {
-        Users user = getUserById(user_id);
+    public boolean submitAnApplication(Users user) {
         if (user != null && user.getStatus() == 0) {
             EntityManager em = emf.createEntityManager();
             try {
                 em.getTransaction().begin();
                 user.setStatus(1);
+                em.merge(user);
+                em.getTransaction().commit();
+                em.close();
+                return true;
+            } catch (Exception e) {
+                return false;
+            }
+        }
+        return false;
+    }
+
+    public boolean checkPasswordUser(String password, Users user) {
+        if (user != null && password != null) {
+            return Arrays.equals(user.getPassword(), md.digest(password.getBytes(StandardCharsets.UTF_8)));
+        }
+        return false;
+    }
+
+    public boolean setNewPassword(String password, Users user) {
+        if (user != null) {
+            EntityManager em = emf.createEntityManager();
+            try {
+                em.getTransaction().begin();
+                user.setPassword(md.digest(password.getBytes(StandardCharsets.UTF_8)));
                 em.merge(user);
                 em.getTransaction().commit();
                 em.close();

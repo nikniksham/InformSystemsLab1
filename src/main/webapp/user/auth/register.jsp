@@ -16,10 +16,10 @@
     <label>Пароль ещё раз:
         <input type="text" name="password2"><br/>
     </label>
-    <button type="submit">Тык</button>
+    <button type="submit">Регистрация</button>
 </form>
-<form action="/demo1/user/auth/login">
-    <input type="submit" value="Залогиниться"/>
+<form action="/demo1/login">
+    <input type="submit" value="Войти"/>
 </form>
 <%
     out.println((request.getAttribute("error") == null) ? "" : request.getAttribute("error"));

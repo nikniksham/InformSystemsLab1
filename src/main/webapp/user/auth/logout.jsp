@@ -7,7 +7,7 @@
 <jsp:include page="/shablons/header.jsp"/>
 <h1>Выход с аккаунта</h1>
 <form method="post">
-    <button type="submit">Точно точно выйти?</button>
+    <button type="submit">Подтвердить выход</button>
 </form>
 <jsp:include page="/shablons/footer.jsp"/>
 </body>

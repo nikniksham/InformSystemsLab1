@@ -13,7 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet(name = "applicationServlet", value = "/user/lk/application")
+@WebServlet(name = "applicationServlet", value = "/application")
 public class ApplicationServlet extends HttpServlet {
     @Inject
     UsersManager usersManager;
@@ -22,15 +22,15 @@ public class ApplicationServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         commonFunc.redirectIfNotAuthorized(request, response);
         commonFunc.setAuthorizedUser(request, response);
-        RequestDispatcher requestDispatcher = request.getRequestDispatcher("user/lk/application.jsp");
+        RequestDispatcher requestDispatcher = request.getRequestDispatcher("/user/lk/application.jsp");
         requestDispatcher.forward(request, response);
     }
 
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         commonFunc.redirectIfNotAuthorized(request, response);
         commonFunc.setAuthorizedUser(request, response);
-        if (usersManager.submitAnApplication(commonFunc.getAuthorizedUser(request, response).getId())) {
-            response.sendRedirect(commonFunc.getLink("/user/auth/login"));
+        if (usersManager.submitAnApplication(commonFunc.getAuthorizedUser(request, response))) {
+            response.sendRedirect(commonFunc.getLink("/personalInformation"));
         }
         request.setAttribute("error", "Заявка на выдвижение не подана");
 

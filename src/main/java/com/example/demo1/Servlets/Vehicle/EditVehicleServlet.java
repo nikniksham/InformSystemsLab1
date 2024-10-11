@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-@WebServlet(name = "editVehicle", value = "/vehicle/editVehicle")
+@WebServlet(name = "editVehicle", value = "/editVehicle")
 public class EditVehicleServlet extends HttpServlet {
     @Inject
     VehicleManager vehicleManager;
@@ -34,7 +34,7 @@ public class EditVehicleServlet extends HttpServlet {
     CommonFunc commonFunc;
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        RequestDispatcher requestDispatcher = request.getRequestDispatcher("vehicle/editVehicle.jsp");
+        RequestDispatcher requestDispatcher = request.getRequestDispatcher("/vehicle/editVehicle.jsp");
         Map<Class, Object> result = standardChecks(request, response, requestDispatcher);
 
         Users users = (Users) result.get(Users.class);
@@ -47,7 +47,7 @@ public class EditVehicleServlet extends HttpServlet {
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        RequestDispatcher requestDispatcher = request.getRequestDispatcher("vehicle/editVehicle.jsp");
+        RequestDispatcher requestDispatcher = request.getRequestDispatcher("/vehicle/editVehicle.jsp");
         Map<Class, Object> result = standardChecks(request, response, requestDispatcher);
 
         Users user = (Users) result.get(Users.class);
@@ -174,7 +174,7 @@ public class EditVehicleServlet extends HttpServlet {
         Users user = commonFunc.getAuthorizedUser(request, response);
 
         if (user == null) {
-            response.sendRedirect(commonFunc.getLink("/user/auth/login"));
+            response.sendRedirect(commonFunc.getLink("/login"));
         }
 
         long vehicle_id = 0;

@@ -1,6 +1,7 @@
 package com.example.demo1.Servlets;
 
 import com.example.demo1.CommonFunc;
+import com.example.demo1.Managers.TokenManager;
 import jakarta.inject.Inject;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -18,7 +19,7 @@ public class StartPageServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         commonFunc.setAuthorizedUser(request, response);
-        RequestDispatcher requestDispatcher = request.getRequestDispatcher("startPage.jsp");
+        RequestDispatcher requestDispatcher = request.getRequestDispatcher("/startPage.jsp");
         requestDispatcher.forward(request, response);
     }
 }

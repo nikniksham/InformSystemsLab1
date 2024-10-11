@@ -14,7 +14,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet(name = "loginServlet", value = "/user/auth/login")
+@WebServlet(name = "loginServlet", value = "/login")
 public class LoginServlet extends HttpServlet {
     @Inject
     UsersManager usersManager;
@@ -26,7 +26,7 @@ public class LoginServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         commonFunc.redirectIfAuthorized(request, response);
         commonFunc.setAuthorizedUser(request, response);
-        RequestDispatcher requestDispatcher = request.getRequestDispatcher("user/auth/login.jsp");
+        RequestDispatcher requestDispatcher = request.getRequestDispatcher("/user/auth/login.jsp");
         requestDispatcher.forward(request, response);
     }
 
@@ -38,9 +38,9 @@ public class LoginServlet extends HttpServlet {
             String new_code = tokenManager.createNewAccessToken(result);
             Cookie code_cookie = new Cookie("avtoritet", new_code);
             response.addCookie(code_cookie);
-            response.sendRedirect(commonFunc.getLink("/"));
+            response.sendRedirect(commonFunc.getLink("/startPage"));
         }
-        request.setAttribute("error", "Invalid login or password");
+        request.setAttribute("error", "Неправильный логин или пароль");
         doGet(request, response);
     }
 }

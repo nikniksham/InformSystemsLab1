@@ -34,7 +34,7 @@ public class CommonFunc {
     public void redirectIfAuthorized(HttpServletRequest request, HttpServletResponse response) throws IOException {
         boolean res = tokenManager.userConnectionValid(request.getCookies());
         if (res) {
-            response.sendRedirect(getLink("/user/auth/logout"));
+            response.sendRedirect(getLink("/logout"));
         }
     }
 
@@ -42,7 +42,7 @@ public class CommonFunc {
     public void redirectIfNotAuthorized(HttpServletRequest request, HttpServletResponse response) throws IOException {
         boolean res = tokenManager.userConnectionValid(request.getCookies());
         if (!res) {
-            response.sendRedirect("/user/auth/login");
+            response.sendRedirect(getLink("/login"));
         }
     }
 }

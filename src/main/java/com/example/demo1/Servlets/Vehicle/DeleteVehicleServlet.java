@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-@WebServlet(name = "deleteVehicle", value = "/vehicle/deleteVehicle")
+@WebServlet(name = "deleteVehicle", value = "/deleteVehicle")
 public class DeleteVehicleServlet extends HttpServlet {
     @Inject
     VehicleManager vehicleManager;
@@ -32,7 +32,7 @@ public class DeleteVehicleServlet extends HttpServlet {
     CommonFunc commonFunc;
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        RequestDispatcher requestDispatcher = request.getRequestDispatcher("vehicle/deleteVehicle.jsp");
+        RequestDispatcher requestDispatcher = request.getRequestDispatcher("/vehicle/deleteVehicle.jsp");
         Map<Class, Object> result = standardChecks(request, response, requestDispatcher);
 
         Users users = (Users) result.get(Users.class);
@@ -45,7 +45,7 @@ public class DeleteVehicleServlet extends HttpServlet {
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        RequestDispatcher requestDispatcher = request.getRequestDispatcher("vehicle/deleteVehicle.jsp");
+        RequestDispatcher requestDispatcher = request.getRequestDispatcher("/vehicle/deleteVehicle.jsp");
         Map<Class, Object> result = standardChecks(request, response, requestDispatcher);
 
         Users user = (Users) result.get(Users.class);
@@ -83,7 +83,7 @@ public class DeleteVehicleServlet extends HttpServlet {
         setAttributes(request, new Vehicle(), new Coordinates());
         Users user = commonFunc.getAuthorizedUser(request, response);
         if (user == null) {
-            response.sendRedirect(commonFunc.getLink("/user/auth/login"));
+            response.sendRedirect(commonFunc.getLink("/login"));
         }
 
         long vehicle_id = 0;

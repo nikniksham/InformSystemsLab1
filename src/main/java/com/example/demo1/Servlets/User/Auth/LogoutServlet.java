@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet(name = "logoutServlet", value = "/user/auth/logout")
+@WebServlet(name = "logoutServlet", value = "/logout")
 public class LogoutServlet extends HttpServlet {
     @Inject
     TokenManager tokenManager;
@@ -21,7 +21,7 @@ public class LogoutServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         commonFunc.redirectIfNotAuthorized(request, response);
         commonFunc.setAuthorizedUser(request, response);
-        RequestDispatcher requestDispatcher = request.getRequestDispatcher("user/auth/logout.jsp");
+        RequestDispatcher requestDispatcher = request.getRequestDispatcher("/user/auth/logout.jsp");
         requestDispatcher.forward(request, response);
     }
 

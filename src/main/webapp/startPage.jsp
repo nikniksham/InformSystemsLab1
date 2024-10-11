@@ -1,3 +1,4 @@
+<%@ page import="com.example.demo1.DBObjects.Users" %>
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html>
