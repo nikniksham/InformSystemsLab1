@@ -13,7 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet(name = "personalInformationServlet", value = "/personalInformation")
+@WebServlet(name = "personalInformationServlet", value = "/user/lk/personalInformation")
 public class PersonalInformationServlet extends HttpServlet {
     @Inject
     CommonFunc commonFunc;

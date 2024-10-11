@@ -14,7 +14,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet(name = "loginServlet", value = "/login")
+@WebServlet(name = "loginServlet", value = "/user/auth/login")
 public class LoginServlet extends HttpServlet {
     @Inject
     UsersManager usersManager;

@@ -2,13 +2,13 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <header>
     <nav>
-        <a href="/demo1/">На гилавную</a>  |
+        <a href="/demo1/startPage">На гилавную</a>  |
         <%
             if (request.getAttribute("user") != null) {
                 Users user = (Users) request.getAttribute("user");
-                out.println("<a href=\"/demo1/personalInformation\"> Пользователь: " + user.getLogin() + "</a>");
+                out.println("<a href=\"/demo1/user/lk/personalInformation\"> Пользователь: " + user.getLogin() + "</a>");
             } else {
-                out.println("<a href=\"/demo1/login\">Войти</a> / <a href=\"/demo1/register\">Зарегистрироваться</a>");
+                out.println("<a href=\"/demo1/user/auth/login\">Войти</a> / <a href=\"/demo1/user/auth/register\">Зарегистрироваться</a>");
             }
         %>
     </nav>

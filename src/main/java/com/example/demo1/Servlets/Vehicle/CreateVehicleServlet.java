@@ -18,7 +18,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet(name = "createVehicle", value = "/createVehicle")
+@WebServlet(name = "createVehicle", value = "/vehicle/createVehicle")
 public class CreateVehicleServlet extends HttpServlet {
     @Inject
     VehicleManager vehicleManager;

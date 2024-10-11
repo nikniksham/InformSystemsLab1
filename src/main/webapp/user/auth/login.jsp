@@ -5,6 +5,7 @@
 </head>
 <body>
 <jsp:include page="/shablons/header.jsp"/>
+<h1>Логин</h1>
 <form method="post">
   <label>Логин:
     <input type="text" name="login" value='<%=((request.getParameter("login") == null) ? "" : request.getParameter("login"))%>' /><br/>

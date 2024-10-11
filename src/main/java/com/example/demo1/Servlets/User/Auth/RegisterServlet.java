@@ -12,7 +12,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
-@WebServlet(name = "registerServlet", value = "/register")
+@WebServlet(name = "registerServlet", value = "/user/auth/register")
 public class RegisterServlet extends HttpServlet {
     @Inject
     UsersManager usersManager;
@@ -38,7 +38,7 @@ public class RegisterServlet extends HttpServlet {
         }
         if (error == null) {
             if (usersManager.addUser(request.getParameter("login"), request.getParameter("password1"))) {
-                response.sendRedirect(commonFunc.getLink("/login"));
+                response.sendRedirect(commonFunc.getLink("/user/auth/login"));
             }
             error = "Some internal error";
         }

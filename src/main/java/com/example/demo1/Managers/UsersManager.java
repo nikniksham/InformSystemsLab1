@@ -96,4 +96,22 @@ public class UsersManager {
             return false;
         }
     }
+
+    public boolean submitAnApplication(long user_id) {
+        Users user = getUserById(user_id);
+        if (user != null && user.getStatus() == 0) {
+            EntityManager em = emf.createEntityManager();
+            try {
+                em.getTransaction().begin();
+                user.setStatus(1);
+                em.merge(user);
+                em.getTransaction().commit();
+                em.close();
+                return true;
+            } catch (Exception e) {
+                return false;
+            }
+        }
+        return false;
+    }
 }

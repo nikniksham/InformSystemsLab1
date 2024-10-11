@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-@WebServlet(name = "deleteVehicle", value = "/deleteVehicle")
+@WebServlet(name = "deleteVehicle", value = "/vehicle/deleteVehicle")
 public class DeleteVehicleServlet extends HttpServlet {
     @Inject
     VehicleManager vehicleManager;
@@ -83,7 +83,7 @@ public class DeleteVehicleServlet extends HttpServlet {
         setAttributes(request, new Vehicle(), new Coordinates());
         Users user = commonFunc.getAuthorizedUser(request, response);
         if (user == null) {
-            response.sendRedirect(commonFunc.getLink("/login"));
+            response.sendRedirect(commonFunc.getLink("/user/auth/login"));
         }
 
         long vehicle_id = 0;
