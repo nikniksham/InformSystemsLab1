@@ -87,11 +87,13 @@ public class TokenManager {
     }
 
     public String getAuthCode(Cookie[] cookies) {
-        for (Cookie c : cookies) {
-            if (c.getName().equals("avtoritet")) {
-                return c.getValue();
+        try {
+            for (Cookie c : cookies) {
+                if (c.getName().equals("avtoritet")) {
+                    return c.getValue();
+                }
             }
-        }
+        } catch (Exception e) {}
         return null;
     }
 
@@ -104,22 +106,24 @@ public class TokenManager {
     }
 
     public Long getUserId(Cookie[] cookies) {
-        for (Cookie c : cookies) {
-            if (c.getName().equals("avtoritet")) {
-                EntityManager em = emf.createEntityManager();
-                Query query = em.createQuery("SELECT u FROM Tokens u WHERE u.code = :code").setParameter("code", c.getValue());
-                try {
-                    Tokens token = (Tokens) query.getSingleResult();
-                    em.close();
-                    if (token.checkExpirationDate()) {
-                        return token.getUser_id();
+        try {
+            for (Cookie c : cookies) {
+                if (c.getName().equals("avtoritet")) {
+                    EntityManager em = emf.createEntityManager();
+                    Query query = em.createQuery("SELECT u FROM Tokens u WHERE u.code = :code").setParameter("code", c.getValue());
+                    try {
+                        Tokens token = (Tokens) query.getSingleResult();
+                        em.close();
+                        if (token.checkExpirationDate()) {
+                            return token.getUser_id();
+                        }
+                    } catch (Exception ex) {
+                        em.close();
+                        return null;
                     }
-                } catch (Exception ex) {
-                    em.close();
-                    return null;
                 }
             }
-        }
+        } catch (Exception e) {}
         return null;
     }
 }

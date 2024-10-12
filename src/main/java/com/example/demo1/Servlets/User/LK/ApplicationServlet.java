@@ -1,7 +1,6 @@
 package com.example.demo1.Servlets.User.LK;
 
 import com.example.demo1.CommonFunc;
-import com.example.demo1.Managers.TokenManager;
 import com.example.demo1.Managers.UsersManager;
 import jakarta.inject.Inject;
 import jakarta.servlet.RequestDispatcher;
@@ -26,13 +25,13 @@ public class ApplicationServlet extends HttpServlet {
         requestDispatcher.forward(request, response);
     }
 
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         commonFunc.redirectIfNotAuthorized(request, response);
         commonFunc.setAuthorizedUser(request, response);
         if (usersManager.submitAnApplication(commonFunc.getAuthorizedUser(request, response))) {
             response.sendRedirect(commonFunc.getLink("/personalInformation"));
         }
         request.setAttribute("error", "Заявка на выдвижение не подана");
-
+        doGet(request, response);
     }
 }

@@ -8,7 +8,7 @@
 <h1>Изменение информации</h1>
 <form method="post">
     <label>Логин:
-        <input type="text" name="login" value='<%=((request.getParameter("login") == null) ? "" : request.getParameter("login"))%>' /><br/>
+        <input type="text" name="new_login" value='<%=((request.getParameter("login") == null) ? "" : request.getParameter("login"))%>' /><br/>
     </label>
     <button type="submit">подтвердить</button>
 </form>

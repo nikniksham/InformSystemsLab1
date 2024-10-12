@@ -30,7 +30,7 @@ public class RegisterServlet extends HttpServlet {
         commonFunc.redirectIfAuthorized(request, response);
         commonFunc.setAuthorizedUser(request, response);
         String error = null;
-        if (usersManager.checkLoginDontExists(request.getParameter("login"))) {
+        if (usersManager.checkLoginExists(request.getParameter("login"))) {
             error = "Логин уже занят";
         }
         if (!request.getParameter("password1").equals(request.getParameter("password2"))) {

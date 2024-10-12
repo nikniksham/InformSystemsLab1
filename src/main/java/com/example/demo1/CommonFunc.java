@@ -45,4 +45,14 @@ public class CommonFunc {
             response.sendRedirect(getLink("/login"));
         }
     }
+
+    public void redirectIfNotAuthorizedAdmin(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        boolean res = tokenManager.userConnectionValid(request.getCookies());
+        if (!res) {
+            response.sendRedirect(getLink("/login"));
+        }
+        if (getAuthorizedUser(request, response).getStatus() != 2) {
+            response.sendRedirect(getLink("/startPage"));
+        }
+    }
 }

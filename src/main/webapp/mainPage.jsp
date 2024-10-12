@@ -1,6 +1,5 @@
 <%@ page import="com.example.demo1.DBObjects.Vehicle" %>
 <%@ page import="java.util.List" %>
-<%@ page import="java.util.ArrayList" %>
 <%@ page import="com.example.demo1.ENUMs.FuelType" %>
 <%@ page import="com.example.demo1.ENUMs.VehicleType" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>

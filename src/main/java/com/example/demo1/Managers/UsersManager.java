@@ -9,6 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
+import java.util.List;
 
 @ApplicationScoped
 public class UsersManager {
@@ -31,7 +32,7 @@ public class UsersManager {
         }
     }
 
-    public boolean checkLoginDontExists(String login) {
+    public boolean checkLoginExists(String login) {
         EntityManager em = emf.createEntityManager();
         try {
             em.createQuery("SELECT u FROM Users u WHERE u.login = :login").setParameter("login", login).getSingleResult();
@@ -114,6 +115,45 @@ public class UsersManager {
         return false;
     }
 
+    public boolean approveAnApplication(Long user_id) {
+        if (user_id != null) {
+            Users user = getUserById(user_id);
+            if (user != null) {
+                EntityManager em = emf.createEntityManager();
+                try {
+                    em.getTransaction().begin();
+                    user.setStatus(2);
+                    em.merge(user);
+                    em.getTransaction().commit();
+                    em.close();
+                    return true;
+                } catch (Exception e) {
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean deleteUser(Long user_id) {
+        if (user_id != null) {
+            Users user = getUserById(user_id);
+            if (user != null && user.getStatus() < 2) {
+                EntityManager em = emf.createEntityManager();
+                try {
+                    em.getTransaction().begin();
+                    em.createQuery("DELETE FROM Users WHERE id = :id").setParameter("id", user_id).executeUpdate();
+                    em.getTransaction().commit();
+                    em.close();
+                    return true;
+                } catch (Exception e) {
+                    return false;
+                }
+            }
+        }
+        return false;
+    }
+
     public boolean checkPasswordUser(String password, Users user) {
         if (user != null && password != null) {
             return Arrays.equals(user.getPassword(), md.digest(password.getBytes(StandardCharsets.UTF_8)));
@@ -136,5 +176,38 @@ public class UsersManager {
             }
         }
         return false;
+    }
+
+    public boolean editUser(String new_login, Users user) {
+        if (user != null) {
+            if (checkLoginExists(new_login)) {
+                return false;
+            }
+            EntityManager em = emf.createEntityManager();
+            try {
+                em.getTransaction().begin();
+                user.setLogin(new_login);
+                em.merge(user);
+                em.getTransaction().commit();
+                em.close();
+                return true;
+            } catch (Exception e) {
+                return false;
+            }
+        }
+        return false;
+    }
+
+    public List<Users> getAllUsers() {
+        EntityManager em = emf.createEntityManager();
+        Query query = em.createQuery("SELECT u FROM Users u ORDER BY u.status DESC");
+        try {
+            List<Users> resultList = (List<Users>) query.getResultList();
+            em.close();
+            return resultList;
+        } catch (Exception ex) {
+            em.close();
+            return null;
+        }
     }
 }
