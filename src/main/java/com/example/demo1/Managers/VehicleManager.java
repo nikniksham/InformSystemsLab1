@@ -1,19 +1,25 @@
 package com.example.demo1.Managers;
 
+import com.example.demo1.DBObjects.Users;
 import com.example.demo1.DBObjects.Vehicle;
 import com.example.demo1.ENUMs.FuelType;
 import com.example.demo1.ENUMs.VehicleType;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.Query;
 
 import java.sql.Timestamp;
+import java.util.HashMap;
 import java.util.List;
 
 @ApplicationScoped
 public class VehicleManager {
+    @Inject
+    InformationManager informationManager;
+
     private EntityManagerFactory emf = Persistence.createEntityManagerFactory("test");
 
     public Long createNewVehicle(String name, long coordinates_id, VehicleType vehicleType, float enginePower, int numberOfWheels, double capacity, long distanceTravelled, long fuelConsumption, FuelType fuelType) {
@@ -108,5 +114,20 @@ public class VehicleManager {
             em.close();
             return null;
         }
+    }
+
+    public HashMap<Long, Boolean> getUserRights(List<Vehicle> vehicleList, Users user) {
+        if (vehicleList == null || user == null) {
+            return null;
+        }
+        HashMap<Long, Boolean> resultList = new HashMap<>();
+        for (Vehicle vehicle : vehicleList) {
+            if (user.getStatus() == 2 || informationManager.checkUserIsAuthor(user.getId(), vehicle.getId())) {
+                resultList.put(vehicle.getId(), true);
+            } else {
+                resultList.put(vehicle.getId(), false);
+            }
+        }
+        return resultList;
     }
 }

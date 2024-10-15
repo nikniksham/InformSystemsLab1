@@ -40,7 +40,7 @@ public class InformationManager {
         Query query = em.createQuery("SELECT u FROM Information u WHERE u.user_id = :user_id AND u.vehicle_id = :vehicle_id AND u.typeOfOperation = :typeOfOperation")
                 .setParameter("user_id", user_id).setParameter("vehicle_id", vehicle_id).setParameter("typeOfOperation", TypeOfOperation.CREATE.getId());
         try {
-            Information information = (Information) query.getSingleResult();
+            query.getSingleResult();
             em.close();
             return true;
         } catch (Exception ex) {

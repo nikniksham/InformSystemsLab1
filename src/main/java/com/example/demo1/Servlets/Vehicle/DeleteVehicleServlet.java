@@ -62,7 +62,7 @@ public class DeleteVehicleServlet extends HttpServlet {
         if (vehicleManager.deleteVehicleById(vehicle.getId())) {
             if (coordinatesManager.deleteCoordinatesById(coordinates.getId())) {
                 informationManager.createInformation(user.getId(), vehicle.getId(), TypeOfOperation.DELETE);
-                response.sendRedirect(commonFunc.getLink("/"));
+                response.sendRedirect(commonFunc.getLink("/mainPage"));
             } else {
                 error = "Ошибка при удалении координат";
             }

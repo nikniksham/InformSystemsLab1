@@ -2,6 +2,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="com.example.demo1.ENUMs.FuelType" %>
 <%@ page import="com.example.demo1.ENUMs.VehicleType" %>
+<%@ page import="java.util.HashMap" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -25,11 +26,21 @@
       <th onclick="sortTable(7, 1)" class="noselect">Пробег</th>
       <th onclick="sortTable(8, 1)" class="noselect">Расход топлива</th>
       <th onclick="sortTable(9, 0)" class="noselect">Тип товлива</th>
+      <%
+        if (request.getAttribute("resultList") != null) {
+          out.println("<th class=\"noselect\">Редактировать вехикл</th>");
+          out.println("<th class=\"noselect\">Удалить вехикл</th>");
+        }
+      %>
     </tr>
   </thead>
   <tbody>
     <%
-      if (request.getAttribute("vehicleList") != null) {
+      if (request.getAttribute("vehicleList") != null) { // resultList
+        HashMap<Long, Boolean> resultList = null;
+        if (request.getAttribute("resultList") != null) {
+          resultList = (HashMap<Long, Boolean>) request.getAttribute("resultList");
+        }
         for (Vehicle vehicle : (List<Vehicle>) request.getAttribute("vehicleList")) {
           out.println("<tr>");
           out.println("<td>" + vehicle.getId() + "</td>");
@@ -42,12 +53,28 @@
           out.println("<td>" + vehicle.getDistanceTravelled() + "</td>");
           out.println("<td>" + vehicle.getFuelConsumption() + "</td>");
           out.println("<td>" + FuelType.values()[vehicle.getFuelType_id()].getTitle() + "</td>");
+
+          if (resultList != null) {
+            if (resultList.get(vehicle.getId()) == Boolean.TRUE) {
+              out.println("<td><a href=\"/demo1/editVehicle?vehicle_id=" + vehicle.getId() + "\">Редактировать</a></td>");
+              out.println("<td><a href=\"/demo1/deleteVehicle?vehicle_id="+vehicle.getId() +"\">Удалить</a></td>");
+            } else {
+              out.println("<td></td>");
+              out.println("<td></td>");
+            }
+          }
+
           out.println("</tr>");
         }
       }
     %>
   </tbody>
 </table>
+<%
+  if (request.getAttribute("user") != null) {
+    out.println("<a href=\"/demo1/createVehicle\"> Создать вехикл </a>");
+  }
+%>
 <jsp:include page="/shablons/footer.jsp"/>
 </body>
 </html>

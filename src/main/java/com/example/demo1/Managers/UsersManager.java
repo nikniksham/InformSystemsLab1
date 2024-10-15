@@ -44,18 +44,6 @@ public class UsersManager {
         }
     }
 
-    public boolean checkAdminExists() {
-        EntityManager em = emf.createEntityManager();
-        try {
-            em.createQuery("SELECT u FROM Users u WHERE u.status = 2").getSingleResult();
-            em.close();
-            return true;
-        } catch (Exception ex) {
-            em.close();
-            return false;
-        }
-    }
-
     public Long loginUser(String login, String password) {
         EntityManager em = emf.createEntityManager();
         Query query = em.createQuery("SELECT u FROM Users u WHERE u.login = :login").setParameter("login", login);
@@ -81,11 +69,7 @@ public class UsersManager {
             Users new_user = new Users();
             new_user.setLogin(login);
             new_user.setPassword(md.digest(password.getBytes(StandardCharsets.UTF_8)));
-            if (checkAdminExists()) {
-                new_user.setStatus(0);
-            } else {
-                new_user.setStatus(2);
-            }
+            new_user.setStatus(0);
 
             em.persist(new_user);
             em.getTransaction().commit();
