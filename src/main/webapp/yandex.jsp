@@ -1,19 +1,52 @@
+<%@ page import="java.util.HashMap" %>
 <%@ page import="com.example.demo1.DBObjects.Vehicle" %>
 <%@ page import="java.util.List" %>
-<%@ page import="com.example.demo1.ENUMs.FuelType" %>
 <%@ page import="com.example.demo1.ENUMs.VehicleType" %>
-<%@ page import="java.util.HashMap" %>
+<%@ page import="com.example.demo1.ENUMs.FuelType" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>MainPage</title>
+    <title>Поисковик</title>
     <link rel="stylesheet" href="/demo1/resources/css/baza.css" type="text/css">
+    <link rel="stylesheet" href="/demo1/resources/css/beautifulForms.css" type="text/css">
     <script src="/demo1/resources/js/sortScript.js" type="text/javascript"></script>
     <script src="/demo1/resources/js/callbackFunc.js" type="text/javascript"></script>
 </head>
 <body>
 <jsp:include page="/shablons/header.jsp"/>
-<h1>Главная страница</h1>
+<div class="form-container">
+    <h2 class="form-header">Поисковик</h2>
+    <form method="post">
+        <label>Подстрока в названии:
+            <input type="text" name="sample"
+                   value='<%=((request.getAttribute("sample") == null) ? "" : request.getAttribute("sample"))%>'/><br/>
+        </label>
+        <label>Начало названия
+            <%
+                if (request.getAttribute("is_start") != null && request.getAttribute("is_start").equals("true")) {
+                    out.println("<input type=\"checkbox\" name=\"is_start\" value=\"true\" checked>");
+                } else {
+                    out.println("<input type=\"checkbox\" name=\"is_start\" value=\"true\">");
+                }
+//                out.println(request.getAttribute("is_start"));
+//                out.println(request.getAttribute("is_start").equals("true"));
+            %>
+        </label>
+        <label>Мощность от (если поле пустое, то ограничения снизу нет):
+            <input type="text" name="power_min"
+                   value='<%=((request.getAttribute("power_min") == null) ? "" : request.getAttribute("power_min"))%>'/><br/>
+        </label>
+        <label>Мощность до (если поле пустое, то ограничения сверху нет):
+            <input type="text" name="power_max"
+                   value='<%=((request.getAttribute("power_max") == null) ? "" : request.getAttribute("power_max"))%>'/><br/>
+        </label>
+        <button type="submit">Найти</button>
+    </form>
+    <%
+        out.println((request.getAttribute("error") == null) ? "" : request.getAttribute("error"));
+    %>
+</div>
+
 <div class="container">
     <div class="table">
         <table border="1" id="data-table">
@@ -29,21 +62,11 @@
                 <th onclick="sortTable(7, 1)" class="noselect">Пробег</th>
                 <th onclick="sortTable(8, 1)" class="noselect">Расход топлива</th>
                 <th onclick="sortTable(9, 0)" class="noselect">Тип товлива</th>
-                <%
-                    if (request.getAttribute("resultList") != null) {
-                        out.println("<th class=\"noselect\">Редактировать вехикл</th>");
-                        out.println("<th class=\"noselect\">Удалить вехикл</th>");
-                    }
-                %>
             </tr>
             </thead>
             <tbody>
             <%
                 if (request.getAttribute("vehicleList") != null) { // resultList
-                    HashMap<Long, Boolean> resultList = null;
-                    if (request.getAttribute("resultList") != null) {
-                        resultList = (HashMap<Long, Boolean>) request.getAttribute("resultList");
-                    }
                     for (Vehicle vehicle : (List<Vehicle>) request.getAttribute("vehicleList")) {
                         out.println("<tr>");
                         out.println("<td>" + vehicle.getId() + "</td>");
@@ -56,17 +79,6 @@
                         out.println("<td>" + vehicle.getDistanceTravelled() + "</td>");
                         out.println("<td>" + vehicle.getFuelConsumption() + "</td>");
                         out.println("<td>" + FuelType.values()[vehicle.getFuelType_id()].getTitle() + "</td>");
-
-                        if (resultList != null) {
-                            if (resultList.get(vehicle.getId()) == Boolean.TRUE) {
-                                out.println("<td><a class=\"button-link\" href=\"/demo1/editVehicle?vehicle_id=" + vehicle.getId() + "\">Редактировать</a></td>");
-                                out.println("<td><a class=\"button-link\" href=\"/demo1/deleteVehicle?vehicle_id=" + vehicle.getId() + "\">Удалить</a></td>");
-                            } else {
-                                out.println("<td></td>");
-                                out.println("<td></td>");
-                            }
-                        }
-
                         out.println("</tr>");
                     }
                 }
@@ -75,12 +87,6 @@
         </table>
     </div>
 </div>
-<%
-    out.println("<p>Среднее значение поля FuelConsumption:" + request.getAttribute("averageFuelConsumption") + "</p>");
-    if (request.getAttribute("user") != null) {
-        out.println("<a class=\"button-link\" href=\"/demo1/createVehicle\"> Создать вехикл </a>");
-    }
-%>
 <jsp:include page="/shablons/footer.jsp"/>
 </body>
 </html>

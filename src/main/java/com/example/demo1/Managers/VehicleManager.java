@@ -116,6 +116,23 @@ public class VehicleManager {
         }
     }
 
+    public Double calcAverageFuelConsumption() {
+        EntityManager em = emf.createEntityManager();
+        Query query = em.createQuery("SELECT u FROM Vehicle u");
+        try {
+            List<Vehicle> resultList = (List<Vehicle>) query.getResultList();
+            em.close();
+            double average = 0d;
+            for (Vehicle veh: resultList) {
+                average += veh.getFuelConsumption();
+            }
+            return average/resultList.size();
+        } catch (Exception ex) {
+            em.close();
+            return null;
+        }
+    }
+
     public HashMap<Long, Boolean> getUserRights(List<Vehicle> vehicleList, Users user) {
         if (vehicleList == null || user == null) {
             return null;
@@ -129,5 +146,20 @@ public class VehicleManager {
             }
         }
         return resultList;
+    }
+
+    public List<Vehicle> searchVehicle(String sample, boolean is_start, Double power_min, Double power_max) {
+        EntityManager em = emf.createEntityManager();
+        Query query = em.createQuery("SELECT v FROM Vehicle v WHERE v.name LIKE :sample AND v.enginePower >= :power_min AND v.enginePower <= :power_max")
+                .setParameter("sample", (is_start && !sample.equals("") ? "" : "%") + sample + "%").setParameter("power_min", (power_min == null ? -1 : power_min))
+                .setParameter("power_max", (power_max == null ? Double.MAX_VALUE : power_max));
+        try {
+            List<Vehicle> resultList = (List<Vehicle>) query.getResultList();
+            em.close();
+            return resultList;
+        } catch (Exception ex) {
+            em.close();
+            return null;
+        }
     }
 }
