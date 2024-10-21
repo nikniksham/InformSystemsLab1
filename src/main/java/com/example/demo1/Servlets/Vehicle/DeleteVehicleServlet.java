@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-@WebServlet(name = "deleteVehicle", value = "/deleteVehicle")
+@WebServlet(name = "deleteVehicleServlet", value = "/deleteVehicle")
 public class DeleteVehicleServlet extends HttpServlet {
     @Inject
     VehicleManager vehicleManager;

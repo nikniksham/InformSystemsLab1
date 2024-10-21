@@ -2,22 +2,27 @@
 <html>
 <head>
     <title>JAKARTA FOR MASOCHISTS</title>
+    <link rel="stylesheet" href="/demo1/resources/css/baza.css" type="text/css">
+    <link rel="stylesheet" href="/demo1/resources/css/beautifulForms.css" type="text/css">
 </head>
 <body>
 <jsp:include page="/shablons/header.jsp"/>
-<h1>Логин</h1>
-<form method="post">
-  <label>Логин:
-    <input type="text" name="login" value='<%=((request.getParameter("login") == null) ? "" : request.getParameter("login"))%>' /><br/>
-  </label>
-  <label>Пароль:
-    <input type="text" name="password"><br/>
-  </label>
-  <button type="submit">Войти</button>
-</form>
-<%
-  out.println((request.getAttribute("error") == null) ? "" : request.getAttribute("error"));
-%>
+<div class="form-container">
+    <h2 class="form-header">Логин</h2>
+    <form method="post">
+        <label>Логин:
+            <input type="text" name="login"
+                   value='<%=((request.getParameter("login") == null) ? "" : request.getParameter("login"))%>'/><br/>
+        </label>
+        <label>Пароль:
+            <input type="text" name="password"><br/>
+        </label>
+        <button type="submit">Войти</button>
+    </form>
+    <%
+        out.println((request.getAttribute("error") == null) ? "" : request.getAttribute("error"));
+    %>
+</div>
 <jsp:include page="/shablons/footer.jsp"/>
 </body>
 </html>

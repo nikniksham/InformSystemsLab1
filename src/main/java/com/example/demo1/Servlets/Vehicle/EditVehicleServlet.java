@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-@WebServlet(name = "editVehicle", value = "/editVehicle")
+@WebServlet(name = "editVehicleServlet", value = "/editVehicle")
 public class EditVehicleServlet extends HttpServlet {
     @Inject
     VehicleManager vehicleManager;

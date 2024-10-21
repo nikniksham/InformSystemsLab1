@@ -2,7 +2,7 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <header>
     <nav>
-        <a href="/demo1/startPage">На гилавную</a>  |
+        <a href="/demo1/mainPage">На главную</a>  |
         <%
             if (request.getAttribute("user") != null) {
                 Users user = (Users) request.getAttribute("user");
@@ -14,3 +14,4 @@
     </nav>
 <%--    <h1>Добро пожаловать на мой вебсайт</h1>--%>
 </header>
+<div class="full-page-div">

@@ -2,6 +2,7 @@
 <html>
 <head>
   <title>Error</title>
+  <link rel="stylesheet" href="/demo1/resources/css/baza.css" type="text/css">
 </head>
 <body>
 <jsp:include page="/shablons/header.jsp"/>

@@ -8,6 +8,7 @@ import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.Query;
 import java.sql.Timestamp;
+import java.util.List;
 
 @ApplicationScoped
 public class InformationManager {
@@ -46,6 +47,35 @@ public class InformationManager {
         } catch (Exception ex) {
             em.close();
             return false;
+        }
+    }
+
+    public boolean checkNewLogs(long last_id) {
+        EntityManager em = emf.createEntityManager();
+        Query query = em.createQuery("SELECT i FROM Information i WHERE i.id > :last_id").setParameter("last_id", last_id);
+        try {
+            List<Information> result = (List<Information>) query.getResultList();
+            em.close();
+            return !result.isEmpty();
+        } catch (Exception ex) {
+            em.close();
+            return false;
+        }
+    }
+
+    public Long getLastInformationId() {
+        EntityManager em = emf.createEntityManager();
+        Query query = em.createQuery("SELECT i FROM Information i ORDER BY i.id DESC");
+        try {
+            List<Information> result = (List<Information>) query.getResultList();
+            em.close();
+            if (!result.isEmpty()) {
+                return result.getFirst().getId();
+            }
+            return null;
+        } catch (Exception ex) {
+            em.close();
+            return null;
         }
     }
 }

@@ -4,6 +4,8 @@
 <html>
 <head>
   <title>Личный кабинет</title>
+  <link rel="stylesheet" href="/demo1/resources/css/baza.css" type="text/css">
+  <link rel="stylesheet" href="/demo1/resources/css/beautifulForms.css" type="text/css">
 </head>
 <body>
 <jsp:include page="/shablons/header.jsp"/><%
