@@ -59,18 +59,6 @@ div.container {
     font-size: 18px;
 }
 
-canvas {
-    margin-bottom: -4px;
-    /*padding: 0;*/
-    /*margin: auto;*/
-    /*display: block;*/
-    /*width: 600px;*/
-}
-
-.my-form {
-    padding-bottom: 3px;
-}
-
 .custom {
     display: flex;
     padding-bottom: inherit;
@@ -125,21 +113,6 @@ thead, tfoot {
     padding: 3px 3px 3px 3px;
 }
 
-header {
-    margin: 0 1% 0 1%; /*Отступы: Сверху справа снизу слева*/
-    width: 98%;
-    background: #b2b2b2;
-    border-radius: 5px;
-}
-
-.header {
-    padding: 1px 1% 1% 1%;
-}
-
-.hea-2 .header {
-    padding: 0 0 0 1%;
-}
-
 p.sad:first-line {
     font-weight: bold;
 }
@@ -153,8 +126,8 @@ p.sad:first-line {
     margin-bottom: -5px;
 }
 
-.full-page-div {
-    min-height: 90vh;
+main.full-page-div {
+    min-height: 85vh;
     width: 98%;
     margin: 0 auto;
 }
@@ -168,9 +141,44 @@ p.sad:first-line {
     border-radius: 4px;
     cursor: pointer;
     transition: background 0.3s;
-    margin-top: auto; /* Отодвигает кнопку вниз */
+    margin-bottom: 3px;
+    margin-top: 3px;
+    margin-left: 3px;
 }
 
 .button-link:hover {
     background-color: #444;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+header {
+    background-color: #000;
+    color: #fff;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+nav a {
+    color: #fff;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+nav a:hover {
+    color: #ccc;
+}
+
+footer {
+    background-color: #000;
+    color: #fff;
+    text-align: center;
+    padding: 20px;
+    position: relative;
+    bottom: 0;
+    width: 100%;
 }

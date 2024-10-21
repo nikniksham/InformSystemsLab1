@@ -11,24 +11,22 @@
     <h2 class="form-header">Регистрация</h2>
     <form method="post">
         <label>Логин:
-            <input type="text" name="login"
+            <input type="text" name="login" minlength="1"
                    value='<%=((request.getParameter("login") == null) ? "" : request.getParameter("login"))%>'/><br/>
         </label>
         <label>Пароль:
-            <input type="text" name="password1"><br/>
+            <input type="password" name="password1"><br/>
         </label>
         <label>Пароль ещё раз:
-            <input type="text" name="password2"><br/>
+            <input type="password" name="password2"><br/>
         </label>
         <button type="submit">Регистрация</button>
     </form>
     <%
         out.println((request.getAttribute("error") == null) ? "" : request.getAttribute("error"));
     %>
+    <a class="button-link" href="/demo1/login">Войти</a>
 </div>
-<form action="/demo1/login">
-    <input type="submit" value="Войти"/>
-</form>
 <jsp:include page="/shablons/footer.jsp"/>
 </body>
 </html>

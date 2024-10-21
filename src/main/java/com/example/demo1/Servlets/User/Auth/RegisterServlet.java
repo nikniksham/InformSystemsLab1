@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.Objects;
 
 @WebServlet(name = "registerServlet", value = "/register")
 public class RegisterServlet extends HttpServlet {
@@ -30,17 +31,21 @@ public class RegisterServlet extends HttpServlet {
         commonFunc.redirectIfAuthorized(request, response);
         commonFunc.setAuthorizedUser(request, response);
         String error = null;
-        if (usersManager.checkLoginExists(request.getParameter("login"))) {
-            error = "Логин уже занят";
-        }
-        if (!request.getParameter("password1").equals(request.getParameter("password2"))) {
-            error = "Пароли не совпадают";
-        }
-        if (error == null) {
-            if (usersManager.addUser(request.getParameter("login"), request.getParameter("password1"))) {
-                response.sendRedirect(commonFunc.getLink("/login"));
+        if (!Objects.equals(request.getParameter("login"), "") && !Objects.equals(request.getParameter("password1"), "")) {
+            if (usersManager.checkLoginExists(request.getParameter("login"))) {
+                error = "Логин уже занят";
             }
-            error = "Внутренняя ошибка";
+            if (!request.getParameter("password1").equals(request.getParameter("password2"))) {
+                error = "Пароли не совпадают";
+            }
+            if (error == null) {
+                if (usersManager.addUser(request.getParameter("login"), request.getParameter("password1"))) {
+                    response.sendRedirect(commonFunc.getLink("/login"));
+                }
+                error = "Внутренняя ошибка";
+            }
+        } else {
+            error = "Логин и пароль не могут быть пустыми";
         }
         request.setAttribute("error", error);
         doGet(request, response);

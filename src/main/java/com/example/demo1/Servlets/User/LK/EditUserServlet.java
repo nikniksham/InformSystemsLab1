@@ -2,6 +2,7 @@ package com.example.demo1.Servlets.User.LK;
 
 import com.example.demo1.CommonFunc;
 import com.example.demo1.DBObjects.Users;
+import com.example.demo1.ENUMs.FuelType;
 import com.example.demo1.Managers.UsersManager;
 import jakarta.inject.Inject;
 import jakarta.servlet.RequestDispatcher;
@@ -23,6 +24,7 @@ public class EditUserServlet extends HttpServlet {
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         commonFunc.redirectIfNotAuthorized(request, response);
         commonFunc.setAuthorizedUser(request, response);
+        request.setAttribute("login", commonFunc.getAuthorizedUser(request, response).getLogin());
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("/user/lk/editUser.jsp");
         requestDispatcher.forward(request, response);
     }

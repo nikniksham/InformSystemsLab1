@@ -11,13 +11,13 @@
     <h2 class="form-header">Изменение пароля</h2>
     <form method="post">
         <label>Введите старый пароль:
-            <input type="text" name="old_password"/><br/>
+            <input type="password" name="old_password"/><br/>
         </label>
         <label>Введите новый пароль:
-            <input type="text" name="new_password1"><br/>
+            <input type="password" name="new_password1"><br/>
         </label>
         <label>Введите новый пароль:
-            <input type="text" name="new_password2"><br/>
+            <input type="password" name="new_password2"><br/>
         </label>
         <button type="submit">Подтвердить смену пароля</button>
     </form>

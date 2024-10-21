@@ -12,6 +12,5 @@
             }
         %>
     </nav>
-<%--    <h1>Добро пожаловать на мой вебсайт</h1>--%>
 </header>
-<div class="full-page-div">
+<main class="full-page-div">

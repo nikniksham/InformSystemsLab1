@@ -11,12 +11,9 @@
     <h2 class="form-header">Изменение информации об аккаунте</h2>
     <form method="post">
         <label>Логин:
-            <input type="text" name="new_login" value='<%=((request.getParameter("login") == null) ? "" : request.getParameter("login"))%>' /><br/>
+            <input type="text" name="new_login" value='<%=((request.getAttribute("login") == null) ? "" : request.getAttribute("login"))%>' /><br/>
         </label>
         <button type="submit">подтвердить</button>
-    </form>
-    <form action="/demo1/login">
-        <input type="submit" value="Залогиниться"/>
     </form>
     <%
         out.println((request.getAttribute("error") == null) ? "" : request.getAttribute("error"));

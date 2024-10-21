@@ -33,12 +33,12 @@
                         out.println("<td>" + user.getStatus() + "</td>");
                         out.println("<td>");
                         if (user.getStatus() == 1) {
-                            out.println("<a href=\"/demo1/approveApplication?user_id=" + user.getId() + "\">Одобрить</a>");
+                            out.println("<a class=\"button-link\" href=\"/demo1/approveApplication?user_id=" + user.getId() + "\">Одобрить</a>");
                         }
                         out.println("</td>");
                         out.println("<td>");
                         if (user.getStatus() < 2) {
-                            out.println("<a href=\"/demo1/deleteUser?user_id=" + user.getId() + "\">Удалить</a>");
+                            out.println("<a class=\"button-link\" href=\"/demo1/deleteUser?user_id=" + user.getId() + "\">Удалить</a>");
                         }
                         out.println("</td>");
 

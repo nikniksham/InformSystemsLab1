@@ -14,28 +14,18 @@
   out.println("<p>Каста пользователя на сайте: " + UserStatus.values()[user.getStatus()].getTitle() + "</p>");
 
   if (user.getStatus() == 0) {
-    out.println("<form action=\"/demo1/application\">");
-    out.println("<input type=\"submit\" value=\"Подать заявку на админство\"/>");
-    out.println("</form>");
+    out.println("<a class=\"button-link\" href=\"/demo1/application\">Подать заявку на админство</a><br>");
   }
 
-  out.println("<form action=\"/demo1/editUser\">");
-  out.println("<input type=\"submit\" value=\"Изменить информацию об аккаунте\"/>");
-  out.println("</form>");
+  out.println("<a class=\"button-link\" href=\"/demo1/editUser\">Изменить информацию об аккаунте</a><br>");
 
-  out.println("<form action=\"/demo1/editPassword\">");
-  out.println("<input type=\"submit\" value=\"Изменить пароль\"/>");
-  out.println("</form>");
+  out.println("<a class=\"button-link\" href=\"/demo1/editPassword\">Изменить пароль</a><br>");
 
   if (user.getStatus() == 2) {
-    out.println("<form action=\"/demo1/adminPanel\">");
-    out.println("<input type=\"submit\" value=\"Админская панель\"/>");
-    out.println("</form>");
+    out.println("<a class=\"button-link\" href=\"/demo1/adminPanel\">Админская панель</a><br>");
   }
 %>
-<form action="/demo1/logout">
-  <input type="submit" value="Разлогиниться"/>
-</form>
+<a class="button-link" href="/demo1/logout">Разлогиниться</a>
 <jsp:include page="/shablons/footer.jsp"/>
 </body>
 </html>
