@@ -70,7 +70,7 @@ public class InformationManager {
             List<Information> result = (List<Information>) query.getResultList();
             em.close();
             if (!result.isEmpty()) {
-                return result.getFirst().getId();
+                return result.get(0).getId();
             }
             return null;
         } catch (Exception ex) {
