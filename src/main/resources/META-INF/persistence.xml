@@ -9,9 +9,16 @@
         <class>com.example.demo1.DBObjects.Tokens</class>
         <properties>
             <property name="jakarta.persistence.jdbc.driver" value="org.postgresql.Driver"/>
+
             <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/InformSys1"/>
+<!--            <property name="jakarta.persistence.jdbc.url" value="jdbc:postgresql://localhost:5432/studs"/>-->
+
             <property name="jakarta.persistence.jdbc.user" value="postgres"/>
+<!--            <property name="jakarta.persistence.jdbc.user" value="s367635"/>-->
+
             <property name="jakarta.persistence.jdbc.password" value="postgres"/>
+<!--            <property name="jakarta.persistence.jdbc.password" value="postgres"/>-->
+
             <property name="spring.jpa.hibernate.ddl-auto" value="validate"/>
             <property name="hibernate.show_sql" value="true" />
             <property name="hibernate.format_sql" value="true" />
