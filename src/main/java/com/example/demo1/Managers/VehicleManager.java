@@ -10,6 +10,9 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 import jakarta.persistence.Query;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 
 import java.sql.Timestamp;
 import java.util.HashMap;
@@ -116,6 +119,33 @@ public class VehicleManager {
         }
     }
 
+    public List<Vehicle> getPaginVehicle(Long last_id, Long oper, Long page_size) {
+        EntityManager em = emf.createEntityManager();
+        if (page_size == null) {page_size = 10l;}
+        if (last_id == null) {last_id = 0l;}
+        if (oper == null) {oper = 0l;}
+        try {
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery cq = cb.createQuery();
+            Root veh = cq.from(Vehicle.class);
+            if (oper == 0l) {
+                cq.where(cb.greaterThan(veh.get("id"), last_id));
+            } else {
+                cq.where(cb.lessThan(veh.get("id"), last_id));
+            }
+            cq.orderBy(cb.asc(veh.get("id")));
+            List<Vehicle> resultList = (List<Vehicle>) em.createQuery(cq).getResultList();
+            if (resultList.size() > 10) {
+                resultList = resultList.subList(0, 10);
+            }
+            em.close();
+            return resultList;
+        } catch (Exception ex) {
+            em.close();
+            return null;
+        }
+    }
+
     public Double calcAverageFuelConsumption() {
         EntityManager em = emf.createEntityManager();
         Query query = em.createQuery("SELECT u FROM Vehicle u");
@@ -150,11 +180,27 @@ public class VehicleManager {
 
     public List<Vehicle> searchVehicle(String sample, boolean is_start, Double power_min, Double power_max) {
         EntityManager em = emf.createEntityManager();
-        Query query = em.createQuery("SELECT v FROM Vehicle v WHERE v.name LIKE :sample AND v.enginePower >= :power_min AND v.enginePower <= :power_max")
-                .setParameter("sample", (is_start && !sample.equals("") ? "" : "%") + sample + "%").setParameter("power_min", (power_min == null ? -1 : power_min))
-                .setParameter("power_max", (power_max == null ? Double.MAX_VALUE : power_max));
+//        Query query = em.createQuery("SELECT v FROM Vehicle v WHERE v.name LIKE :sample AND v.enginePower >= :power_min AND v.enginePower <= :power_max")
+//                .setParameter("sample", (is_start && !sample.equals("") ? "" : "%") + sample + "%").setParameter("power_min", (power_min == null ? -1 : power_min))
+//                .setParameter("power_max", (power_max == null ? Double.MAX_VALUE : power_max));
         try {
-            List<Vehicle> resultList = (List<Vehicle>) query.getResultList();
+//            List<Vehicle> resultList = (List<Vehicle>) query.getResultList();
+
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery cq = cb.createQuery();
+            Root veh = cq.from(Vehicle.class);
+            if (power_min != null) {
+                cq.where(cb.greaterThanOrEqualTo(veh.get("enginePower"), power_min));
+            }
+            if (power_max != null) {
+                cq.where(cb.lessThanOrEqualTo(veh.get("enginePower"), power_max));
+            }
+            if (!sample.equals("")) {
+                cq.where(cb.like(veh.get("name"), (is_start ? "" : "%") + sample + "%"));
+            }
+
+            List<Vehicle> resultList = (List<Vehicle>) em.createQuery(cq).getResultList();
+
             em.close();
             return resultList;
         } catch (Exception ex) {

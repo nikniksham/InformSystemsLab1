@@ -39,12 +39,17 @@
             </thead>
             <tbody>
             <%
+                Long start_id = null;
+                Long end_id = null;
                 if (request.getAttribute("vehicleList") != null) { // resultList
+                    List<Vehicle> vehicleList = (List<Vehicle>) request.getAttribute("vehicleList");
+                    start_id = vehicleList.get(0).getId();
                     HashMap<Long, Boolean> resultList = null;
                     if (request.getAttribute("resultList") != null) {
                         resultList = (HashMap<Long, Boolean>) request.getAttribute("resultList");
                     }
-                    for (Vehicle vehicle : (List<Vehicle>) request.getAttribute("vehicleList")) {
+                    for (Vehicle vehicle : vehicleList) {
+                        end_id = vehicle.getId();
                         out.println("<tr>");
                         out.println("<td>" + vehicle.getId() + "</td>");
                         out.println("<td>" + vehicle.getName() + "</td>");
@@ -76,6 +81,12 @@
     </div>
 </div>
 <%
+    if (start_id != null) {
+        out.println("<a class=\"button-link\" href=\"/demo1/mainPage?last_id=" + start_id + "&oper=1\"> Страница назад </a>");
+    }
+    if (end_id != null) {
+        out.println("<a class=\"button-link\" href=\"/demo1/mainPage?last_id="+end_id+"&oper=0\"> Страница вперёд </a>");
+    }
     out.println("<p>Среднее значение поля FuelConsumption:" + request.getAttribute("averageFuelConsumption") + "</p>");
     if (request.getAttribute("user") != null) {
         out.println("<a class=\"button-link\" href=\"/demo1/createVehicle\"> Создать вехикл </a>");

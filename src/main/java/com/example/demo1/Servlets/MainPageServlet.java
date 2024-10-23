@@ -25,8 +25,17 @@ public class MainPageServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         commonFunc.setAuthorizedUser(request, response);
+        Long last_id = null, oper=null;
+        try {
+            last_id = Long.parseLong(request.getParameter("last_id"));
+        } catch (Exception ex) {}
+
+        try {
+            oper = Long.parseLong(request.getParameter("oper"));
+        } catch (Exception ex) {}
+
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("mainPage.jsp");
-        List<Vehicle> vehicleList = vehicleManager.getAllVehicle();
+        List<Vehicle> vehicleList = vehicleManager.getPaginVehicle(last_id, oper, null);
         HashMap<Long, Boolean> resultList = vehicleManager.getUserRights(vehicleList, commonFunc.getAuthorizedUser(request, response));
         request.setAttribute("vehicleList", vehicleList);
         request.setAttribute("resultList", resultList);

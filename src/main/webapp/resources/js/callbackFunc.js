@@ -1,8 +1,8 @@
 var lastId = null;
 var needUpdate = null;
 
-// let baza_url = "http://localhost:8080";  // For local
-let baza_url = "http://localhost:32073"; // For helios
+let baza_url = "http://localhost:8080";  // For local
+// let baza_url = "http://localhost:32073"; // For helios
 
 function setLastId() {
     const Http = new XMLHttpRequest();
