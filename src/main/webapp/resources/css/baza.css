@@ -150,6 +150,20 @@ main.full-page-div {
     background-color: #444;
 }
 
+.button-link-disable {
+    display: inline-block; /* Позволяет задавать размеры и отступы */
+    background-color: #ccc; /* Светло-серый фон */
+    color: #777; /* Темно-серый текст */
+    text-decoration: none; /* Убираем подчеркивание */
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: not-allowed; /* Курсор не активен */
+    margin-bottom: 3px;
+    margin-top: 3px;
+    margin-left: 3px;
+    opacity: 0.6; /* Монотонный вид */
+}
+
 * {
     box-sizing: border-box;
 }

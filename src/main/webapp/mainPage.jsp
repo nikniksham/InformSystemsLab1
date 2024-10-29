@@ -3,6 +3,7 @@
 <%@ page import="com.example.demo1.ENUMs.FuelType" %>
 <%@ page import="com.example.demo1.ENUMs.VehicleType" %>
 <%@ page import="java.util.HashMap" %>
+<%@ page import="java.util.Objects" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -30,6 +31,9 @@
                 <th onclick="sortTable(8, 1)" class="noselect">Расход топлива</th>
                 <th onclick="sortTable(9, 0)" class="noselect">Тип товлива</th>
                 <%
+                    if (request.getAttribute("user") != null) {
+                        out.println("<th class=\"noselect\">Добавить колёс</th>");
+                    }
                     if (request.getAttribute("resultList") != null) {
                         out.println("<th class=\"noselect\">Редактировать вехикл</th>");
                         out.println("<th class=\"noselect\">Удалить вехикл</th>");
@@ -43,7 +47,10 @@
                 Long end_id = null;
                 if (request.getAttribute("vehicleList") != null) { // resultList
                     List<Vehicle> vehicleList = (List<Vehicle>) request.getAttribute("vehicleList");
-                    start_id = vehicleList.get(0).getId();
+                    if (vehicleList.size() > 0) {
+                        start_id = vehicleList.get(0).getId();
+                        end_id = vehicleList.get(0).getId();
+                    }
                     HashMap<Long, Boolean> resultList = null;
                     if (request.getAttribute("resultList") != null) {
                         resultList = (HashMap<Long, Boolean>) request.getAttribute("resultList");
@@ -61,6 +68,10 @@
                         out.println("<td>" + vehicle.getDistanceTravelled() + "</td>");
                         out.println("<td>" + vehicle.getFuelConsumption() + "</td>");
                         out.println("<td>" + FuelType.values()[vehicle.getFuelType_id()].getTitle() + "</td>");
+
+                        if (request.getAttribute("user") != null) {
+                            out.println("<td><a class=\"button-link\" href=\"/demo1/addWheels?vehicle_id=" + vehicle.getId() + "\">Добавить колёс</a></td>");
+                        }
 
                         if (resultList != null) {
                             if (resultList.get(vehicle.getId()) == Boolean.TRUE) {
@@ -81,11 +92,18 @@
     </div>
 </div>
 <%
-    if (start_id != null) {
+    Object have_greater = request.getAttribute("have_greater"), have_lower = request.getAttribute("have_lower");
+//    out.println("<a>"+have_greater+"</a><br>");
+//    out.println("<a>"+have_lower+"</a><br>");
+    if (start_id != null && have_lower != null && (boolean) have_lower) {
         out.println("<a class=\"button-link\" href=\"/demo1/mainPage?last_id=" + start_id + "&oper=1\"> Страница назад </a>");
+    } else {
+        out.println("<a class=\"button-link-disable\"> Страница назад </a>");
     }
-    if (end_id != null) {
+    if (end_id != null && have_greater != null && (boolean) have_greater) {
         out.println("<a class=\"button-link\" href=\"/demo1/mainPage?last_id="+end_id+"&oper=0\"> Страница вперёд </a>");
+    } else {
+        out.println("<a class=\"button-link-disable\"> Страница вперёд </a>");
     }
     out.println("<p>Среднее значение поля FuelConsumption:" + request.getAttribute("averageFuelConsumption") + "</p>");
     if (request.getAttribute("user") != null) {

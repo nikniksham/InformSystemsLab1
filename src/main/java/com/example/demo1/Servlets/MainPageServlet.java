@@ -39,6 +39,10 @@ public class MainPageServlet extends HttpServlet {
         HashMap<Long, Boolean> resultList = vehicleManager.getUserRights(vehicleList, commonFunc.getAuthorizedUser(request, response));
         request.setAttribute("vehicleList", vehicleList);
         request.setAttribute("resultList", resultList);
+        if (vehicleList != null && vehicleList.size() > 0) {
+            request.setAttribute("have_greater", vehicleManager.haveElemGreaterOrLower(vehicleList.get(vehicleList.size()-1).getId(), true));
+            request.setAttribute("have_lower", vehicleManager.haveElemGreaterOrLower(vehicleList.get(0).getId(), false));
+        }
         request.setAttribute("averageFuelConsumption", vehicleManager.calcAverageFuelConsumption());
         requestDispatcher.forward(request, response);
     }

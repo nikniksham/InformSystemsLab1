@@ -4,6 +4,9 @@ import com.example.demo1.DBObjects.Users;
 import jakarta.persistence.*;
 
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -61,6 +64,22 @@ public class UsersManager {
         }
     }
 
+    public boolean checkAdminExists() {
+        EntityManager em = emf.createEntityManager();
+        try {
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery cq = cb.createQuery();
+            Root us = cq.from(Users.class);
+            cq.where(cb.equal(us.get("status"), 2));
+            em.createQuery(cq).setMaxResults(1).getSingleResult();
+            em.close();
+            return true;
+        } catch (Exception ex) {
+            em.close();
+            return false;
+        }
+    }
+
     public boolean addUser(String login, String password) {
         EntityManager em = emf.createEntityManager();
         try {
@@ -69,7 +88,11 @@ public class UsersManager {
             Users new_user = new Users();
             new_user.setLogin(login);
             new_user.setPassword(md.digest(password.getBytes(StandardCharsets.UTF_8)));
-            new_user.setStatus(0);
+            if (!checkAdminExists()) {
+                new_user.setStatus(2);
+            } else {
+                new_user.setStatus(0);
+            }
 
             em.persist(new_user);
             em.getTransaction().commit();

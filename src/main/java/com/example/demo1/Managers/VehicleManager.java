@@ -12,9 +12,12 @@ import jakarta.persistence.Persistence;
 import jakarta.persistence.Query;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -130,19 +133,65 @@ public class VehicleManager {
             Root veh = cq.from(Vehicle.class);
             if (oper == 0l) {
                 cq.where(cb.greaterThan(veh.get("id"), last_id));
+                cq.orderBy(cb.asc(veh.get("id")));
             } else {
                 cq.where(cb.lessThan(veh.get("id"), last_id));
+                cq.orderBy(cb.desc(veh.get("id")));
             }
-            cq.orderBy(cb.asc(veh.get("id")));
-            List<Vehicle> resultList = (List<Vehicle>) em.createQuery(cq).getResultList();
-            if (resultList.size() > 10) {
-                resultList = resultList.subList(0, 10);
-            }
+            List<Vehicle> resultList = (List<Vehicle>) em.createQuery(cq).setMaxResults(Math.toIntExact(page_size)).getResultList();
             em.close();
+            if (oper == 1l) {
+                Collections.reverse(resultList);
+            }
             return resultList;
         } catch (Exception ex) {
             em.close();
             return null;
+        }
+    }
+
+    public boolean haveElemGreaterOrLower(long id, boolean is_greater) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery cq = cb.createQuery();
+            Root veh = cq.from(Vehicle.class);
+            if (is_greater) {
+                cq.where(cb.greaterThan(veh.get("id"), id));
+            } else {
+                cq.where(cb.lessThan(veh.get("id"), id));
+            }
+            em.createQuery(cq).setMaxResults(1).getSingleResult();
+            em.close();
+            return true;
+        } catch (Exception ex) {
+            em.close();
+            return false;
+        }
+    }
+
+    public String addWheels(long vehicle_id, int count_wheels) {
+        if (count_wheels < 0) {return "Кол-во добавляемых колёс должно быть > 0";}
+        EntityManager em = emf.createEntityManager();
+        try {
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery cq = cb.createQuery();
+            Root veh = cq.from(Vehicle.class);
+            cq.where(cb.equal(veh.get("id"), vehicle_id));
+            Vehicle vehicle = (Vehicle) em.createQuery(cq).setMaxResults(1).getSingleResult();
+            if ((long)vehicle.getNumberOfWheels() + (long)count_wheels > 2147483647) {
+                em.close();
+                return "Слишком много подкидываешь колёс, не поверят (максимум можно добавить " + (2147483647 - vehicle.getNumberOfWheels()) + ")";
+            }
+            em.getTransaction().begin();
+            vehicle.setNumberOfWheels(vehicle.getNumberOfWheels() + count_wheels);
+            em.merge(vehicle);
+            em.getTransaction().commit();
+            em.close();
+            return null;
+        } catch (Exception ex) {
+            em.close();
+            return "ТС не найдено";
         }
     }
 
@@ -180,24 +229,23 @@ public class VehicleManager {
 
     public List<Vehicle> searchVehicle(String sample, boolean is_start, Double power_min, Double power_max) {
         EntityManager em = emf.createEntityManager();
-//        Query query = em.createQuery("SELECT v FROM Vehicle v WHERE v.name LIKE :sample AND v.enginePower >= :power_min AND v.enginePower <= :power_max")
-//                .setParameter("sample", (is_start && !sample.equals("") ? "" : "%") + sample + "%").setParameter("power_min", (power_min == null ? -1 : power_min))
-//                .setParameter("power_max", (power_max == null ? Double.MAX_VALUE : power_max));
         try {
-//            List<Vehicle> resultList = (List<Vehicle>) query.getResultList();
-
             CriteriaBuilder cb = em.getCriteriaBuilder();
             CriteriaQuery cq = cb.createQuery();
             Root veh = cq.from(Vehicle.class);
+            List<Predicate> predicates = new ArrayList<>();
+
             if (power_min != null) {
-                cq.where(cb.greaterThanOrEqualTo(veh.get("enginePower"), power_min));
+                predicates.add(cb.greaterThanOrEqualTo(veh.get("enginePower"), power_min));
             }
             if (power_max != null) {
-                cq.where(cb.lessThanOrEqualTo(veh.get("enginePower"), power_max));
+                predicates.add(cb.lessThanOrEqualTo(veh.get("enginePower"), power_max));
             }
             if (!sample.equals("")) {
-                cq.where(cb.like(veh.get("name"), (is_start ? "" : "%") + sample + "%"));
+                predicates.add(cb.like(veh.get("name"), (is_start ? "" : "%") + sample + "%"));
             }
+
+            cq.where(cb.and(predicates.toArray(new Predicate[0])));
 
             List<Vehicle> resultList = (List<Vehicle>) em.createQuery(cq).getResultList();
 

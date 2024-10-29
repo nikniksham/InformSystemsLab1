@@ -51,13 +51,13 @@ public class CreateVehicleServlet extends HttpServlet {
         try {
             x_coords = Double.parseDouble(request.getParameter("x_coords"));
         } catch (Exception e) {
-            error = "X должно быть дробным числом";
+            error = "X должно быть дробным числом и не превосходить по модулю 1.7*10^308";
         }
 
         try {
             y_coords = Integer.parseInt(request.getParameter("y_coords"));
         } catch (Exception e) {
-            error = "Y должно быть целым числом";
+            error = "Y должно быть целым числом И по модулю не превосходить 2147483647";
         }
 
         String name = request.getParameter("name");
@@ -74,7 +74,7 @@ public class CreateVehicleServlet extends HttpServlet {
                 throw new Exception();
             }
         } catch (Exception e) {
-            error = "Мощность двигателя должна быть дробным числом >0";
+            error = "Мощность двигателя должна быть дробным числом > 0 и < 3,40282346638528860e+38";
         }
 
         try {
@@ -83,7 +83,7 @@ public class CreateVehicleServlet extends HttpServlet {
                 throw new Exception();
             }
         } catch (Exception e) {
-            error = "Количество колёс должно быть целым числом >0";
+            error = "Количество колёс должно быть целым числом > 0 И <= 2147483647";
         }
 
         try {
@@ -92,7 +92,7 @@ public class CreateVehicleServlet extends HttpServlet {
                 throw new Exception();
             }
         } catch (Exception e) {
-            error = "Вместимость должна быть дробным числом >0";
+            error = "Вместимость должна быть дробным числом > 0 И < 1.7*10^308";
         }
 
         try {
@@ -101,7 +101,7 @@ public class CreateVehicleServlet extends HttpServlet {
                 throw new Exception();
             }
         } catch (Exception e) {
-            error = "Пробег должен быть целым числом >0";
+            error = "Пробег должен быть целым числом > 0 И <= 9223372036854775807";
         }
 
         try {
@@ -110,7 +110,7 @@ public class CreateVehicleServlet extends HttpServlet {
                 throw new Exception();
             }
         } catch (Exception e) {
-            error = "Расход топлива должен быть целым числом >0";
+            error = "Расход топлива должен быть целым числом > 0 И <= 9223372036854775807";
         }
 
         FuelType fuelType = FuelType.values()[Integer.parseInt(request.getParameter("fuelType"))];

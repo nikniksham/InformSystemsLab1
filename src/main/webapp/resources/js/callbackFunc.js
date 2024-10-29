@@ -6,7 +6,7 @@ let baza_url = "http://localhost:8080";  // For local
 
 function setLastId() {
     const Http = new XMLHttpRequest();
-    const url= baza_url + '/demo1/getLastInformationId';
+    const url= 'http://localhost:8080/demo1/getLastInformationId';
     Http.open("GET", url);
     Http.send();
 
@@ -34,4 +34,4 @@ var interval = setInterval(function() {
             }
         }
     }
-}, 3000);
+}, 1000);

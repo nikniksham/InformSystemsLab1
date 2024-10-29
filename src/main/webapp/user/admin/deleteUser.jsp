@@ -12,6 +12,9 @@
     <form method="post">
         <button type="submit">удалить</button>
     </form>
+    <%
+        out.println((request.getAttribute("error") == null) ? "" : request.getAttribute("error"));
+    %>
 </div>
 <jsp:include page="/shablons/footer.jsp"/>
 </body>
