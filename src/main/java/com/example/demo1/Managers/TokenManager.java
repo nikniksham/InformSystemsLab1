@@ -3,16 +3,17 @@ package com.example.demo1.Managers;
 import com.example.demo1.DBObjects.Tokens;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.*;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import jakarta.servlet.http.Cookie;
-
 import java.sql.Timestamp;
 import java.util.Random;
 
 @ApplicationScoped
 public class TokenManager {
-    private EntityManagerFactory emf = Persistence.createEntityManagerFactory("test");
-    private Random rng = new Random(72382);
-    private String characters = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM0123456789";
+    private final EntityManagerFactory emf = Persistence.createEntityManagerFactory("test");
+    private final Random rng = new Random(72382);
 
     public TokenManager() {}
 
@@ -33,34 +34,37 @@ public class TokenManager {
         return code;
     }
 
-    public boolean checkCodeExists(String code) {
+    public Tokens getTokenByCode(String code) {
         EntityManager em = emf.createEntityManager();
-        Query query = em.createQuery("SELECT u FROM Tokens u WHERE u.code = :code").setParameter("code", code);
         try {
-            query.getSingleResult();
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<Tokens> cq = cb.createQuery(Tokens.class);
+            Root<Tokens> tok = cq.from(Tokens.class);
+            cq.where(cb.equal(tok.get("code"), code));
+            Tokens token = em.createQuery(cq).setMaxResults(1).getSingleResult();
             em.close();
-            return true;
+            return token;
         } catch (Exception ex) {
             em.close();
-            return false;
+            return null;
         }
     }
 
+    public boolean checkCodeExists(String code) {
+        return getTokenByCode(code) != null;
+    }
+
     public boolean checkCodeExistsAndExpiration(String code) {
-        EntityManager em = emf.createEntityManager();
-        Query query = em.createQuery("SELECT u FROM Tokens u WHERE u.code = :code").setParameter("code", code);
-        try {
-            Tokens token = (Tokens) query.getSingleResult();
-            em.close();
+        Tokens token = getTokenByCode(code);
+        if (token != null) {
             return token.checkExpirationDate();
-        } catch (Exception ex) {
-            em.close();
-            return false;
         }
+        return false;
     }
 
     public String generateCode(int length)
     {
+        String characters = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM0123456789";
         char[] code = new char[length];
         boolean run = true;
         while (run) {
@@ -73,10 +77,12 @@ public class TokenManager {
     }
 
     public boolean deleteTokenByCode(String code) {
+        Tokens detachedToken = getTokenByCode(code);
         EntityManager em = emf.createEntityManager();
         try {
+            Tokens managedToken = em.merge(detachedToken);
             em.getTransaction().begin();
-            em.createQuery("DELETE FROM Tokens WHERE code = :code").setParameter("code", code).executeUpdate();
+            em.remove(managedToken);
             em.getTransaction().commit();
             em.close();
             return true;
@@ -109,16 +115,12 @@ public class TokenManager {
         try {
             for (Cookie c : cookies) {
                 if (c.getName().equals("avtoritet")) {
-                    EntityManager em = emf.createEntityManager();
-                    Query query = em.createQuery("SELECT u FROM Tokens u WHERE u.code = :code").setParameter("code", c.getValue());
                     try {
-                        Tokens token = (Tokens) query.getSingleResult();
-                        em.close();
-                        if (token.checkExpirationDate()) {
+                        Tokens token = getTokenByCode(c.getValue());
+                        if (token != null && token.checkExpirationDate()) {
                             return token.getUser_id();
                         }
                     } catch (Exception ex) {
-                        em.close();
                         return null;
                     }
                 }

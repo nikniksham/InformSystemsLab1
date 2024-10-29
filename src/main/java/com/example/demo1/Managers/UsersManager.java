@@ -1,6 +1,8 @@
 package com.example.demo1.Managers;
 
+import com.example.demo1.DBObjects.Tokens;
 import com.example.demo1.DBObjects.Users;
+import com.example.demo1.DBObjects.Vehicle;
 import jakarta.persistence.*;
 
 import jakarta.enterprise.context.ApplicationScoped;
@@ -22,11 +24,25 @@ public class UsersManager {
     public UsersManager() throws NoSuchAlgorithmException {}
 
     public Users getUserById(Long id) {
-        if (id == null) {return null;}
         EntityManager em = emf.createEntityManager();
-        Query query = em.createQuery("SELECT u FROM Users u WHERE u.id = :id").setParameter("id", id);
         try {
-            Users user = (Users) query.getSingleResult();
+            Users user = em.find(Users.class, id);
+            em.close();
+            return user;
+        } catch (Exception ex) {
+            em.close();
+            return null;
+        }
+    }
+
+    public Users getUserByLogin(String login) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<Users> cq = cb.createQuery(Users.class);
+            Root<Users> us = cq.from(Users.class);
+            cq.where(cb.equal(us.get("login"), login));
+            Users user = em.createQuery(cq).setMaxResults(1).getSingleResult();
             em.close();
             return user;
         } catch (Exception ex) {
@@ -36,30 +52,17 @@ public class UsersManager {
     }
 
     public boolean checkLoginExists(String login) {
-        EntityManager em = emf.createEntityManager();
-        try {
-            em.createQuery("SELECT u FROM Users u WHERE u.login = :login").setParameter("login", login).getSingleResult();
-            em.close();
-            return true;
-        } catch (Exception ex) {
-            em.close();
-            return false;
-        }
+        return getUserByLogin(login) != null;
     }
 
     public Long loginUser(String login, String password) {
-        EntityManager em = emf.createEntityManager();
-        Query query = em.createQuery("SELECT u FROM Users u WHERE u.login = :login").setParameter("login", login);
+        Users user = getUserByLogin(login);
         try {
-            Users us_res = (Users) query.getSingleResult();
-            if (!Arrays.equals(us_res.getPassword(), md.digest(password.getBytes(StandardCharsets.UTF_8)))) {
-                em.close();
+            if (!Arrays.equals(user.getPassword(), md.digest(password.getBytes(StandardCharsets.UTF_8)))) {
                 return null;
             }
-            em.close();
-            return us_res.getId();
+            return user.getId();
         } catch (Exception ex) {
-            em.close();
             return null;
         }
     }
@@ -68,8 +71,8 @@ public class UsersManager {
         EntityManager em = emf.createEntityManager();
         try {
             CriteriaBuilder cb = em.getCriteriaBuilder();
-            CriteriaQuery cq = cb.createQuery();
-            Root us = cq.from(Users.class);
+            CriteriaQuery<Users> cq = cb.createQuery(Users.class);
+            Root<Users> us = cq.from(Users.class);
             cq.where(cb.equal(us.get("status"), 2));
             em.createQuery(cq).setMaxResults(1).getSingleResult();
             em.close();
@@ -146,10 +149,12 @@ public class UsersManager {
         if (user_id != null) {
             Users user = getUserById(user_id);
             if (user != null && user.getStatus() < 2) {
+                Users detachedUsers = getUserById(user_id);
                 EntityManager em = emf.createEntityManager();
                 try {
+                    Users managedUser = em.merge(detachedUsers);
                     em.getTransaction().begin();
-                    em.createQuery("DELETE FROM Users WHERE id = :id").setParameter("id", user_id).executeUpdate();
+                    em.remove(managedUser);
                     em.getTransaction().commit();
                     em.close();
                     return true;
@@ -207,9 +212,12 @@ public class UsersManager {
 
     public List<Users> getAllUsers() {
         EntityManager em = emf.createEntityManager();
-        Query query = em.createQuery("SELECT u FROM Users u ORDER BY u.status DESC");
         try {
-            List<Users> resultList = (List<Users>) query.getResultList();
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<Users> cq = cb.createQuery(Users.class);
+            Root<Users> us = cq.from(Users.class);
+            cq.orderBy(cb.asc(us.get("id")));
+            List<Users> resultList = em.createQuery(cq).getResultList();
             em.close();
             return resultList;
         } catch (Exception ex) {

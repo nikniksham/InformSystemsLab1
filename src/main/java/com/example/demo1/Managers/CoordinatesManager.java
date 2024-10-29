@@ -5,12 +5,11 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
-import jakarta.persistence.Query;
 
 
 @ApplicationScoped
 public class CoordinatesManager {
-    private EntityManagerFactory emf = Persistence.createEntityManagerFactory("test");
+    private final EntityManagerFactory emf = Persistence.createEntityManagerFactory("test");
 
     public Long createNewCoordinates(double x, int y) {
         EntityManager em = emf.createEntityManager();
@@ -33,10 +32,12 @@ public class CoordinatesManager {
     }
 
     public boolean deleteCoordinatesById(long id) {
+        Coordinates detachedCoordinates = getCoordinatesById(id);
         EntityManager em = emf.createEntityManager();
         try {
+            Coordinates managedCoordinates = em.merge(detachedCoordinates);
             em.getTransaction().begin();
-            em.createQuery("DELETE FROM Coordinates WHERE id = :id").setParameter("id", id).executeUpdate();
+            em.remove(managedCoordinates);
             em.getTransaction().commit();
             em.close();
             return true;
@@ -48,9 +49,8 @@ public class CoordinatesManager {
 
     public Coordinates getCoordinatesById(long id) {
         EntityManager em = emf.createEntityManager();
-        Query query = em.createQuery("SELECT u FROM Coordinates u WHERE u.id = :id").setParameter("id", id);
         try {
-            Coordinates coordinates = (Coordinates) query.getSingleResult();
+            Coordinates coordinates = em.find(Coordinates.class, id);
             em.close();
             return coordinates;
         } catch (Exception ex) {

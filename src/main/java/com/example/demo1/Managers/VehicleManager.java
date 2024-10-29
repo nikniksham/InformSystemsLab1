@@ -9,7 +9,6 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
-import jakarta.persistence.Query;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
@@ -26,7 +25,7 @@ public class VehicleManager {
     @Inject
     InformationManager informationManager;
 
-    private EntityManagerFactory emf = Persistence.createEntityManagerFactory("test");
+    private final EntityManagerFactory emf = Persistence.createEntityManagerFactory("test");
 
     public Long createNewVehicle(String name, long coordinates_id, VehicleType vehicleType, float enginePower, int numberOfWheels, double capacity, long distanceTravelled, long fuelConsumption, FuelType fuelType) {
         EntityManager em = emf.createEntityManager();
@@ -59,14 +58,15 @@ public class VehicleManager {
 
     public Vehicle getVehicleById(long id) {
         EntityManager em = emf.createEntityManager();
-        Query query = em.createQuery("SELECT u FROM Vehicle u WHERE u.id = :id").setParameter("id", id);
         try {
-            Vehicle vehicle = (Vehicle) query.getSingleResult();
+            Vehicle vehicle = em.find(Vehicle.class, id);
             em.close();
             return vehicle;
         } catch (Exception ex) {
             em.close();
-            return null;
+            Vehicle vehicle = new Vehicle();
+            vehicle.setId(10);
+            return vehicle;
         }
     }
 
@@ -95,11 +95,13 @@ public class VehicleManager {
         return false;
     }
 
-    public boolean deleteVehicleById(long id) {
+    public boolean deleteVehicle(long id) {
+        Vehicle detachedVehicle = getVehicleById(id);
         EntityManager em = emf.createEntityManager();
         try {
+            Vehicle managedVehicle = em.merge(detachedVehicle);
             em.getTransaction().begin();
-            em.createQuery("DELETE FROM Vehicle WHERE id = :id").setParameter("id", id).executeUpdate();
+            em.remove(managedVehicle);
             em.getTransaction().commit();
             em.close();
             return true;
@@ -111,9 +113,12 @@ public class VehicleManager {
 
     public List<Vehicle> getAllVehicle() {
         EntityManager em = emf.createEntityManager();
-        Query query = em.createQuery("SELECT u FROM Vehicle u");
         try {
-            List<Vehicle> resultList = (List<Vehicle>) query.getResultList();
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<Vehicle> cq = cb.createQuery(Vehicle.class);
+            Root<Vehicle> veh = cq.from(Vehicle.class);
+            cq.orderBy(cb.asc(veh.get("id")));
+            List<Vehicle> resultList = em.createQuery(cq).getResultList();
             em.close();
             return resultList;
         } catch (Exception ex) {
@@ -124,23 +129,23 @@ public class VehicleManager {
 
     public List<Vehicle> getPaginVehicle(Long last_id, Long oper, Long page_size) {
         EntityManager em = emf.createEntityManager();
-        if (page_size == null) {page_size = 10l;}
-        if (last_id == null) {last_id = 0l;}
-        if (oper == null) {oper = 0l;}
+        if (page_size == null) {page_size = 10L;}
+        if (last_id == null) {last_id = 0L;}
+        if (oper == null) {oper = 0L;}
         try {
             CriteriaBuilder cb = em.getCriteriaBuilder();
-            CriteriaQuery cq = cb.createQuery();
-            Root veh = cq.from(Vehicle.class);
-            if (oper == 0l) {
+            CriteriaQuery<Vehicle> cq = cb.createQuery(Vehicle.class);
+            Root<Vehicle> veh = cq.from(Vehicle.class);
+            if (oper == 0L) {
                 cq.where(cb.greaterThan(veh.get("id"), last_id));
                 cq.orderBy(cb.asc(veh.get("id")));
             } else {
                 cq.where(cb.lessThan(veh.get("id"), last_id));
                 cq.orderBy(cb.desc(veh.get("id")));
             }
-            List<Vehicle> resultList = (List<Vehicle>) em.createQuery(cq).setMaxResults(Math.toIntExact(page_size)).getResultList();
+            List<Vehicle> resultList = em.createQuery(cq).setMaxResults(Math.toIntExact(page_size)).getResultList();
             em.close();
-            if (oper == 1l) {
+            if (oper == 1L) {
                 Collections.reverse(resultList);
             }
             return resultList;
@@ -154,8 +159,8 @@ public class VehicleManager {
         EntityManager em = emf.createEntityManager();
         try {
             CriteriaBuilder cb = em.getCriteriaBuilder();
-            CriteriaQuery cq = cb.createQuery();
-            Root veh = cq.from(Vehicle.class);
+            CriteriaQuery<Vehicle> cq = cb.createQuery(Vehicle.class);
+            Root<Vehicle> veh = cq.from(Vehicle.class);
             if (is_greater) {
                 cq.where(cb.greaterThan(veh.get("id"), id));
             } else {
@@ -175,10 +180,10 @@ public class VehicleManager {
         EntityManager em = emf.createEntityManager();
         try {
             CriteriaBuilder cb = em.getCriteriaBuilder();
-            CriteriaQuery cq = cb.createQuery();
-            Root veh = cq.from(Vehicle.class);
+            CriteriaQuery<Vehicle> cq = cb.createQuery(Vehicle.class);
+            Root<Vehicle> veh = cq.from(Vehicle.class);
             cq.where(cb.equal(veh.get("id"), vehicle_id));
-            Vehicle vehicle = (Vehicle) em.createQuery(cq).setMaxResults(1).getSingleResult();
+            Vehicle vehicle = em.createQuery(cq).setMaxResults(1).getSingleResult();
             if ((long)vehicle.getNumberOfWheels() + (long)count_wheels > 2147483647) {
                 em.close();
                 return "Слишком много подкидываешь колёс, не поверят (максимум можно добавить " + (2147483647 - vehicle.getNumberOfWheels()) + ")";
@@ -196,20 +201,15 @@ public class VehicleManager {
     }
 
     public Double calcAverageFuelConsumption() {
-        EntityManager em = emf.createEntityManager();
-        Query query = em.createQuery("SELECT u FROM Vehicle u");
-        try {
-            List<Vehicle> resultList = (List<Vehicle>) query.getResultList();
-            em.close();
+        List<Vehicle> resultList = getAllVehicle();
+        if (resultList.size() > 0) {
             double average = 0d;
-            for (Vehicle veh: resultList) {
+            for (Vehicle veh : resultList) {
                 average += veh.getFuelConsumption();
             }
-            return average/resultList.size();
-        } catch (Exception ex) {
-            em.close();
-            return null;
+            return average / resultList.size();
         }
+        return null;
     }
 
     public HashMap<Long, Boolean> getUserRights(List<Vehicle> vehicleList, Users user) {
@@ -231,8 +231,8 @@ public class VehicleManager {
         EntityManager em = emf.createEntityManager();
         try {
             CriteriaBuilder cb = em.getCriteriaBuilder();
-            CriteriaQuery cq = cb.createQuery();
-            Root veh = cq.from(Vehicle.class);
+            CriteriaQuery<Vehicle> cq = cb.createQuery(Vehicle.class);
+            Root<Vehicle> veh = cq.from(Vehicle.class);
             List<Predicate> predicates = new ArrayList<>();
 
             if (power_min != null) {
@@ -247,7 +247,7 @@ public class VehicleManager {
 
             cq.where(cb.and(predicates.toArray(new Predicate[0])));
 
-            List<Vehicle> resultList = (List<Vehicle>) em.createQuery(cq).getResultList();
+            List<Vehicle> resultList = em.createQuery(cq).getResultList();
 
             em.close();
             return resultList;

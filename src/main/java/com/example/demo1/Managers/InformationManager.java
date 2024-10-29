@@ -6,13 +6,14 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
-import jakarta.persistence.Query;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
 import java.sql.Timestamp;
-import java.util.List;
 
 @ApplicationScoped
 public class InformationManager {
-    private EntityManagerFactory emf = Persistence.createEntityManagerFactory("test");
+    private final EntityManagerFactory emf = Persistence.createEntityManagerFactory("test");
 
     public boolean createInformation(long user_id, long vehicle_id, TypeOfOperation typeOfOperation) {
         EntityManager em = emf.createEntityManager();
@@ -38,10 +39,12 @@ public class InformationManager {
 
     public boolean checkUserIsAuthor(long user_id, long vehicle_id) {
         EntityManager em = emf.createEntityManager();
-        Query query = em.createQuery("SELECT u FROM Information u WHERE u.user_id = :user_id AND u.vehicle_id = :vehicle_id AND u.typeOfOperation = :typeOfOperation")
-                .setParameter("user_id", user_id).setParameter("vehicle_id", vehicle_id).setParameter("typeOfOperation", TypeOfOperation.CREATE.getId());
         try {
-            query.getSingleResult();
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<Information> cq = cb.createQuery(Information.class);
+            Root<Information> inf = cq.from(Information.class);
+            cq.where(cb.and(cb.equal(inf.get("user_id"), user_id), cb.equal(inf.get("vehicle_id"), vehicle_id), cb.equal(inf.get("typeOfOperation"), TypeOfOperation.CREATE.getId())));
+            em.createQuery(cq).setMaxResults(1).getSingleResult();
             em.close();
             return true;
         } catch (Exception ex) {
@@ -52,11 +55,14 @@ public class InformationManager {
 
     public boolean checkNewLogs(long last_id) {
         EntityManager em = emf.createEntityManager();
-        Query query = em.createQuery("SELECT i FROM Information i WHERE i.id > :last_id").setParameter("last_id", last_id);
         try {
-            List<Information> result = (List<Information>) query.getResultList();
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<Information> cq = cb.createQuery(Information.class);
+            Root<Information> inf = cq.from(Information.class);
+            cq.where(cb.greaterThan(inf.get("id"), last_id));
+            em.createQuery(cq).setMaxResults(1).getSingleResult();
             em.close();
-            return !result.isEmpty();
+            return true;
         } catch (Exception ex) {
             em.close();
             return false;
@@ -65,14 +71,14 @@ public class InformationManager {
 
     public Long getLastInformationId() {
         EntityManager em = emf.createEntityManager();
-        Query query = em.createQuery("SELECT i FROM Information i ORDER BY i.id DESC");
         try {
-            List<Information> result = (List<Information>) query.getResultList();
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<Information> cq = cb.createQuery(Information.class);
+            Root<Information> inf = cq.from(Information.class);
+            cq.orderBy(cb.desc(inf.get("id")));
+            Information information = em.createQuery(cq).setMaxResults(1).getSingleResult();
             em.close();
-            if (!result.isEmpty()) {
-                return result.get(0).getId();
-            }
-            return null;
+            return information.getId();
         } catch (Exception ex) {
             em.close();
             return null;
