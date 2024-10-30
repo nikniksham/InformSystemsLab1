@@ -1,16 +1,27 @@
+let lastId = null;
+let baza_url = "http://localhost:8080";  // For local
+// let baza_url = "http://localhost:32073"; // For helios
+
 let canvas = document.getElementById('drawLine');
 let ctx = canvas.getContext('2d');
 ctx.font = "16px roboto";
 ctx.lineWidth = "2"
 
 class Vehicle {
-    constructor(id, name, capacity, x, y, author_id) {
+    constructor(id, name, capacity, x, y, author_id, creationDate, enginePower, numberOfWheels, distanceTravelled, fuelConsumption) {
         this.id = id
         this.name = name
-        this.capacity = capacity
+        this.radius = Math.max(1, Math.log10(capacity)) * 5
         this.x = x
         this.y = y
+        this.capacity = capacity
+        this.creationDate = creationDate
+        this.enginePower = enginePower
+        this.numberOfWheels = numberOfWheels
+        this.distanceTravelled = distanceTravelled
+        this.fuelConsumption = fuelConsumption
         this.author_id = author_id
+        this.selected = false
     }
 }
 
@@ -24,7 +35,7 @@ class Grid {
         this.elems = []
         this.x_coord = 0
         this.y_coord = 0
-        this.zoom = 1
+        this.userColors = {}
     }
 
     update() {
@@ -34,13 +45,17 @@ class Grid {
 
     draw() {
         this.drawGrid()
-        this.drawPoint(...this.CoordsToCanvas([0, 0]), 5)
-        let start = this.CoordsToCanvas([-500, 0])
-        let end = this.CoordsToCanvas([500, 0])
-        this.drawLine(start, end)
-        start = this.CoordsToCanvas([0, -500])
-        end = this.CoordsToCanvas([0, 500])
-        this.drawLine(start, end)
+        this.drawElems()
+    }
+
+    drawElems() {
+        this.elems.forEach((elem) => {
+            let color = this.userColors[elem.author_id]
+            if (elem.selected) {
+                color = "#FFF"
+            }
+            this.drawPoint(...this.CoordsToCanvas([elem.x, elem.y]), elem.radius, color)
+        })
     }
 
     drawPoint(x_point, y_point, radius, color="#ffe300") {
@@ -61,10 +76,6 @@ class Grid {
         ctx.fillStyle = "#000"
     }
 
-    drawUI() {
-
-    }
-
     drawGrid() {
         let step = 100
         this.drawLine([0, this.height - 10], [this.width, this.height - 10])
@@ -74,19 +85,19 @@ class Grid {
             this.drawLine([x, this.height], [x, this.height-20])
         }
         this.drawLine([10, this.height], [10, 0])
-        for (let y = (this.y_coord + this.height) % step - step; y <= this.height - 50; y += step) {
-            let y_str = (this.height/2 - (y - this.y_coord)).toString()
+        for (let y = (this.height - this.y_coord) % step - step - 15; y <= this.height - 50; y += step) {
+            let y_str = (this.height/2 - (y + this.y_coord)).toString()
             ctx.fillText(y_str, 30, y + 4);
             this.drawLine([0, y], [20, y])
         }
     }
 
     CoordsToCanvas(coords) {
-        return [(coords[0] + this.x_coord) + this.width/2 / this.zoom, this.height - ((coords[1] + this.y_coord) + this.height/2 / this.zoom)]
+        return [(coords[0] + this.x_coord) + this.width/2, this.height/2 - (coords[1] + this.y_coord)]
     }
 
-    CanvasToCoords(x_canvas, y_canvas) {
-        return [(x_canvas - this.width / 2 + this.x_coord), -(y_canvas - this.height / 2) + this.y_coord]
+    CanvasToCoords(canvas) {
+        return [canvas[0] - this.x_coord - this.width/2, this.height/2 - this.y_coord - canvas[1]]
     }
 
     clear() {
@@ -111,7 +122,74 @@ class Grid {
             this.last_mouse_coords = mouse_coords
         }
     }
+
+    set_elems(data) {
+        this.elems = []
+        let vehicles = data["Vehicles"]
+        let coordinates = data["Coordinates"]
+        let authors = data["Authors"]
+        vehicles.forEach((veh) => {
+            let find_coords = null, find_author = null
+            for (let coor of coordinates) {
+                if (coor["id"] === veh["coordinates_id"]) {
+                    find_coords = coor
+                    break
+                }
+            }
+            for (let auth of authors) {
+                if (auth.vehicle_id === veh.id) {
+                    find_author = auth
+                    break
+                }
+            }
+            if (find_coords != null) {
+                if (find_author != null) {
+                    find_author = find_author.author_id
+                }
+                if (!(find_author in this.userColors)) {
+                    let randomColor = Math.floor(Math.random() * 16777215).toString(16);
+                    this.userColors[find_author] = `#${randomColor.padStart(6, '0')}`
+                }
+                this.elems.push(new Vehicle(veh.id, veh.name, veh.capacity, find_coords.x, find_coords.y, find_author,
+                    veh.creationDate, veh.enginePower, veh.numberOfWheels, veh.distanceTravelled, veh.fuelConsumption))
+            }
+        })
+        this.update()
+    }
+
+    show_info(mouse_cords) {
+        let id = null
+        for (let i = this.elems.length - 1; i >= 0; --i) {
+            let veh = this.elems[i]
+            let coords = this.CoordsToCanvas([veh.x, veh.y])
+            if (((coords[0] - mouse_cords[0])**2 + (coords[1] - mouse_cords[1])**2)**0.5 <= veh.radius) {
+                id = veh.id
+                break
+            }
+        }
+        if (id != null) {
+            this.elems.forEach((veh) => {
+                if (veh.id === id) {
+                    veh.selected = true
+                    document.getElementById('id').innerText = "id: " + veh.id
+                    document.getElementById('name').innerText = "name: "+ veh.name
+                    document.getElementById('coords').innerText = "coords: [" + veh.x + ", " + veh.y + "]"
+                    document.getElementById('capacity').innerText = "capacity: "+ veh.capacity
+                    document.getElementById('creationDate').innerText = "creationDate: "+ veh.creationDate
+                    document.getElementById('enginePower').innerText = "enginePower: "+ veh.enginePower
+                    document.getElementById('numberOfWheels').innerText = "numberOfWheels: "+ veh.numberOfWheels
+                    document.getElementById('distanceTravelled').innerText = "distanceTravelled: "+ veh.distanceTravelled
+                    document.getElementById('fuelConsumption').innerText = "fuelConsumption: "+ veh.fuelConsumption
+                    document.getElementById('author_id').innerText = "author_id: "+ veh.author_id
+                } else {
+                    veh.selected = false
+                }
+            })
+        }
+        this.update()
+    }
 }
+
 
 
 grid = new Grid(canvas.width, canvas.height)
@@ -121,17 +199,65 @@ canvas.onmousemove = function (evt) {
     let rect = this.getBoundingClientRect(), x = evt.clientX - rect.left, y = evt.clientY - rect.top;
     grid.update();
     grid.move([x, y])
-    console.log([grid.x_coord, grid.y_coord])
 }
 
 canvas.onmousedown = function (evt) {
     grid.mouse_on()
+    let rect = this.getBoundingClientRect(), x = evt.clientX - rect.left, y = evt.clientY - rect.top;
+    // console.log(grid.CanvasToCoords([x, y]))
+    grid.show_info([x, y])
 }
 
-canvas.onmouseup = function (evt) {
+canvas.onmouseup = function () {
     grid.mouse_leave()
 }
 
-canvas.onmouseleave = function (evt) {
+canvas.onmouseleave = function () {
     grid.mouse_leave()
 }
+
+function setLastId() {
+    const Http = new XMLHttpRequest();
+    const url= baza_url + '/demo1/getLastInformationId';
+    Http.open("GET", url);
+    Http.send();
+
+    Http.onreadystatechange = () => {
+        if (Http.responseText !== "") {
+            lastId = Http.responseText;
+        }
+    }
+}
+
+function setNewVehicles() {
+    const Http = new XMLHttpRequest();
+    const url= baza_url + '/demo1/getAllVehicles'
+    Http.open("GET", url);
+    Http.send();
+
+    Http.onreadystatechange = () => {
+        if (Http.responseText !== "") {
+            grid.set_elems(JSON.parse(Http.responseText))
+        }
+    }
+}
+
+setNewVehicles()
+setLastId()
+let interval = setInterval(function() {
+    if (lastId != null) {
+        const Http = new XMLHttpRequest();
+        const url = baza_url + '/demo1/checkNewInformation?last_id=' + lastId
+        Http.open("GET", url)
+        Http.send();
+
+        Http.onreadystatechange = () => {
+            if (Http.responseText !== "") {
+                if (Http.responseText.charCodeAt(0) === 116) {
+                    setLastId()
+                    setNewVehicles()
+                }
+            }
+        }
+    }
+}, 1000)

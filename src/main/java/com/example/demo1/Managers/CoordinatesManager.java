@@ -5,6 +5,11 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Root;
+
+import java.util.List;
 
 
 @ApplicationScoped
@@ -26,6 +31,22 @@ public class CoordinatesManager {
 
             return new_coordinates.getId();
         } catch (Exception e) {
+            em.close();
+            return null;
+        }
+    }
+
+    public List<Coordinates> getAllCoordinates() {
+        EntityManager em = emf.createEntityManager();
+        try {
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<Coordinates> cq = cb.createQuery(Coordinates.class);
+            Root<Coordinates> coor = cq.from(Coordinates.class);
+            cq.orderBy(cb.asc(coor.get("id")));
+            List<Coordinates> resultList = em.createQuery(cq).getResultList();
+            em.close();
+            return resultList;
+        } catch (Exception ex) {
             em.close();
             return null;
         }

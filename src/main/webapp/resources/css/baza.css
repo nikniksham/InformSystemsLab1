@@ -207,3 +207,7 @@ div.canvasContainer {
 #drawLine {
     border: 1px solid black;
 }
+
+div.info_about {
+    margin-left: 10px;
+}

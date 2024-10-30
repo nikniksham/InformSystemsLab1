@@ -23,5 +23,6 @@ public class GetLastInformationIdServlet extends HttpServlet {
                 out.println(res);
             }
         } catch (Exception e) {}
+        out.close();
     }
 }

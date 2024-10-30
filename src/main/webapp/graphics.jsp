@@ -11,6 +11,19 @@
 
 <div class="canvasContainer">
     <canvas id="drawLine" width="1120" height="630"></canvas>
+    <div class="info_about">
+        <h3>Информация о выбранном объекте</h3>
+        <p id="id"></p>
+        <p id="name"></p>
+        <p id="coords"></p>
+        <p id="capacity"></p>
+        <p id="creationDate"></p>
+        <p id="enginePower"></p>
+        <p id="numberOfWheels"></p>
+        <p id="distanceTravelled"></p>
+        <p id="fuelConsumption"></p>
+        <p id="author_id"></p>
+    </div>
 </div>
 
 <jsp:include page="/shablons/footer.jsp"/>

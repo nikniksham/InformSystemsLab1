@@ -22,5 +22,6 @@ public class CheckNewInformationServlet extends HttpServlet {
         } catch (Exception e) {
             out.println(false);
         }
+        out.close();
     }
 }

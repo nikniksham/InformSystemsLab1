@@ -53,6 +53,22 @@ public class InformationManager {
         }
     }
 
+    public Long getAuthor(long vehicle_id) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<Information> cq = cb.createQuery(Information.class);
+            Root<Information> inf = cq.from(Information.class);
+            cq.where(cb.and(cb.equal(inf.get("vehicle_id"), vehicle_id), cb.equal(inf.get("typeOfOperation"), TypeOfOperation.CREATE.getId())));
+            Information information = em.createQuery(cq).setMaxResults(1).getSingleResult();
+            em.close();
+            return information.getUser_id();
+        } catch (Exception ex) {
+            em.close();
+            return null;
+        }
+    }
+
     public boolean checkNewLogs(long last_id) {
         EntityManager em = emf.createEntityManager();
         try {

@@ -4,6 +4,7 @@
     <nav>
         <a href="/demo1/mainPage">На главную</a>  |
         <a href="/demo1/yandex">Поисковик</a>  |
+        <a href="/demo1/graphics">Графическое представление</a>  |
         <%
             if (request.getAttribute("user") != null) {
                 Users user = (Users) request.getAttribute("user");
