@@ -196,3 +196,14 @@ footer {
     bottom: 0;
     width: 100%;
 }
+
+div.canvasContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 10px;
+}
+
+#drawLine {
+    border: 1px solid black;
+}

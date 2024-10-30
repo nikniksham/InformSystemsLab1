@@ -1,8 +1,6 @@
 package com.example.demo1.Managers;
 
-import com.example.demo1.DBObjects.Tokens;
 import com.example.demo1.DBObjects.Users;
-import com.example.demo1.DBObjects.Vehicle;
 import jakarta.persistence.*;
 
 import jakarta.enterprise.context.ApplicationScoped;
