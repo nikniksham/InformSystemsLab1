@@ -100,7 +100,7 @@ public class DeleteVehicleServlet extends HttpServlet {
             requestDispatcher.forward(request, response);
         }
 
-        if (!(user.getStatus() == 2 || informationManager.checkUserIsAuthor(user.getId(), vehicle.getId()))) {
+        if (!(user.getStatus() == 2 && vehicle.isCommonAccess() || informationManager.checkUserIsAuthor(user.getId(), vehicle.getId()))) {
             request.setAttribute("error", "Недостаточно прав для редактирования вехикла");
             requestDispatcher.forward(request, response);
         }

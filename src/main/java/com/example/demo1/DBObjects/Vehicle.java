@@ -21,7 +21,7 @@ public class Vehicle implements java.io.Serializable {
     private String name;
     @NonNull
     private long coordinates_id; // REFERENCES TO Coordinates(id)
-    private Timestamp creationDate; // autoCreate in DB
+    private Timestamp creationDate;
     private int vehicleType_id; // REFERENCES to java ENUM VehicleType
     @NonNull
     private float enginePower;
@@ -33,4 +33,6 @@ public class Vehicle implements java.io.Serializable {
     private long fuelConsumption;
     @NonNull
     private int fuelType_id; // REFERENCES to java ENUM FuelType
+    @NonNull
+    private boolean commonAccess;
 }

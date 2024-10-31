@@ -2,12 +2,10 @@ package com.example.demo1.Managers;
 
 import com.example.demo1.DBObjects.Users;
 import jakarta.persistence.*;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Root;
-
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -72,6 +70,22 @@ public class UsersManager {
             CriteriaQuery<Users> cq = cb.createQuery(Users.class);
             Root<Users> us = cq.from(Users.class);
             cq.where(cb.equal(us.get("status"), 2));
+            em.createQuery(cq).setMaxResults(1).getSingleResult();
+            em.close();
+            return true;
+        } catch (Exception ex) {
+            em.close();
+            return false;
+        }
+    }
+
+    public boolean checkPasswordExists(String password) {
+        EntityManager em = emf.createEntityManager();
+        try {
+            CriteriaBuilder cb = em.getCriteriaBuilder();
+            CriteriaQuery<Users> cq = cb.createQuery(Users.class);
+            Root<Users> us = cq.from(Users.class);
+            cq.where(cb.equal(us.get("password"), md.digest(password.getBytes(StandardCharsets.UTF_8))));
             em.createQuery(cq).setMaxResults(1).getSingleResult();
             em.close();
             return true;

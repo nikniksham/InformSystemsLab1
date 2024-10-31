@@ -72,6 +72,15 @@
           }
         %>
       </select>
+    </label>
+    <label>Разрешаю админам редактировать
+      <%
+        if (request.getAttribute("commonAccess") != null && request.getAttribute("commonAccess").toString().equals("true")) {
+          out.println("<input type=\"checkbox\" name=\"commonAccess\" value=\"true\" checked>");
+        } else {
+          out.println("<input type=\"checkbox\" name=\"commonAccess\" value=\"true\">");
+        }
+      %>
     </label><br>
     <button type="submit">Изменить вехикл</button>
   </form>

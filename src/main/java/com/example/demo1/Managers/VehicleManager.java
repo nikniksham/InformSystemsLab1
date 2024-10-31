@@ -27,7 +27,7 @@ public class VehicleManager {
 
     private final EntityManagerFactory emf = Persistence.createEntityManagerFactory("test");
 
-    public Long createNewVehicle(String name, long coordinates_id, VehicleType vehicleType, float enginePower, int numberOfWheels, double capacity, long distanceTravelled, long fuelConsumption, FuelType fuelType) {
+    public Long createNewVehicle(String name, long coordinates_id, VehicleType vehicleType, float enginePower, int numberOfWheels, double capacity, long distanceTravelled, long fuelConsumption, FuelType fuelType, boolean commonAccess) {
         EntityManager em = emf.createEntityManager();
         try {
             em.getTransaction().begin();
@@ -44,6 +44,7 @@ public class VehicleManager {
             new_vehicle.setDistanceTravelled(distanceTravelled);
             new_vehicle.setFuelConsumption(fuelConsumption);
             new_vehicle.setFuelType_id(fuelType.getId());
+            new_vehicle.setCommonAccess(commonAccess);
 
             em.persist(new_vehicle);
             em.getTransaction().commit();
@@ -70,7 +71,7 @@ public class VehicleManager {
         }
     }
 
-    public boolean editVehicleById(long vehicle_id, String name, VehicleType vehicleType, float enginePower, int numberOfWheels, double capacity, long distanceTravelled, long fuelConsumption, FuelType fuelType) {
+    public boolean editVehicleById(long vehicle_id, String name, VehicleType vehicleType, float enginePower, int numberOfWheels, double capacity, long distanceTravelled, long fuelConsumption, FuelType fuelType, boolean commonAccess) {
         Vehicle vehicle = getVehicleById(vehicle_id);
         if (vehicle != null) {
             EntityManager em = emf.createEntityManager();
@@ -84,6 +85,7 @@ public class VehicleManager {
                 vehicle.setDistanceTravelled(distanceTravelled);
                 vehicle.setFuelConsumption(fuelConsumption);
                 vehicle.setFuelType_id(fuelType.getId());
+                vehicle.setCommonAccess(commonAccess);
                 em.merge(vehicle);
                 em.getTransaction().commit();
                 em.close();
@@ -218,7 +220,7 @@ public class VehicleManager {
         }
         HashMap<Long, Boolean> resultList = new HashMap<>();
         for (Vehicle vehicle : vehicleList) {
-            if (user.getStatus() == 2 || informationManager.checkUserIsAuthor(user.getId(), vehicle.getId())) {
+            if (user.getStatus() == 2 && vehicle.isCommonAccess() || informationManager.checkUserIsAuthor(user.getId(), vehicle.getId())) {
                 resultList.put(vehicle.getId(), true);
             } else {
                 resultList.put(vehicle.getId(), false);

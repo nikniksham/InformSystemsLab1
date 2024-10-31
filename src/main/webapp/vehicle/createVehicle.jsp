@@ -1,5 +1,4 @@
 <%@ page import="com.example.demo1.ENUMs.VehicleType" %>
-<%@ page import="java.util.List" %>
 <%@ page import="com.example.demo1.ENUMs.FuelType" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
@@ -72,6 +71,15 @@
                     }
                 %>
             </select>
+        </label>
+        <label>Разрешаю админам редактировать
+            <%
+                if (request.getAttribute("commonAccess") != null && request.getAttribute("commonAccess").toString().equals("true")) {
+                    out.println("<input type=\"checkbox\" name=\"commonAccess\" value=\"true\" checked>");
+                } else {
+                    out.println("<input type=\"checkbox\" name=\"commonAccess\" value=\"true\">");
+                }
+            %>
         </label><br>
         <button type="submit">Создать вехикл</button>
     </form>

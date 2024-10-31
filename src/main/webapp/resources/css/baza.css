@@ -162,6 +162,7 @@ main.full-page-div {
     margin-top: 3px;
     margin-left: 3px;
     opacity: 0.6; /* Монотонный вид */
+    pointer-events: none;
 }
 
 * {

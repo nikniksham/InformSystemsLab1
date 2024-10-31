@@ -35,9 +35,14 @@ public class RegisterServlet extends HttpServlet {
             if (usersManager.checkLoginExists(request.getParameter("login"))) {
                 error = "Логин уже занят";
             }
-            if (!request.getParameter("password1").equals(request.getParameter("password2"))) {
+            if (error == null && !request.getParameter("password1").equals(request.getParameter("password2"))) {
                 error = "Пароли не совпадают";
             }
+
+            if (error == null && usersManager.checkPasswordExists(request.getParameter("password1"))) {
+                error = "Пароль уже занят";
+            }
+
             if (error == null) {
                 if (usersManager.addUser(request.getParameter("login"), request.getParameter("password1"))) {
                     response.sendRedirect(commonFunc.getLink("/login"));

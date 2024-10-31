@@ -28,8 +28,6 @@
                 } else {
                     out.println("<input type=\"checkbox\" name=\"is_start\" value=\"true\">");
                 }
-//                out.println(request.getAttribute("is_start"));
-//                out.println(request.getAttribute("is_start").equals("true"));
             %>
         </label>
         <label>Мощность от (если поле пустое, то ограничения снизу нет):

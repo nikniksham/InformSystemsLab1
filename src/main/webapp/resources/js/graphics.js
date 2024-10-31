@@ -8,7 +8,7 @@ ctx.font = "16px roboto";
 ctx.lineWidth = "2"
 
 class Vehicle {
-    constructor(id, name, capacity, x, y, author_id, creationDate, enginePower, numberOfWheels, distanceTravelled, fuelConsumption) {
+    constructor(id, name, capacity, x, y, author_id, creationDate, enginePower, numberOfWheels, distanceTravelled, fuelConsumption, commonAccess) {
         this.id = id
         this.name = name
         this.radius = Math.max(1, Math.log10(capacity)) * 5
@@ -22,6 +22,7 @@ class Vehicle {
         this.fuelConsumption = fuelConsumption
         this.author_id = author_id
         this.selected = false
+        this.commonAccess = commonAccess
     }
 }
 
@@ -124,6 +125,7 @@ class Grid {
     }
 
     set_elems(data) {
+        console.log(data)
         this.elems = []
         let vehicles = data["Vehicles"]
         let coordinates = data["Coordinates"]
@@ -151,7 +153,7 @@ class Grid {
                     this.userColors[find_author] = `#${randomColor.padStart(6, '0')}`
                 }
                 this.elems.push(new Vehicle(veh.id, veh.name, veh.capacity, find_coords.x, find_coords.y, find_author,
-                    veh.creationDate, veh.enginePower, veh.numberOfWheels, veh.distanceTravelled, veh.fuelConsumption))
+                    veh.creationDate, veh.enginePower, veh.numberOfWheels, veh.distanceTravelled, veh.fuelConsumption, veh.commonAccess))
             }
         })
         this.update()
@@ -181,6 +183,31 @@ class Grid {
                     document.getElementById('distanceTravelled').innerText = "distanceTravelled: "+ veh.distanceTravelled
                     document.getElementById('fuelConsumption').innerText = "fuelConsumption: "+ veh.fuelConsumption
                     document.getElementById('author_id').innerText = "author_id: "+ veh.author_id
+                    let editWheels_btn = document.getElementById('editWheels')
+                    editWheels_btn.href = "/demo1/addWheels?vehicle_id="+veh.id
+                    console.log(editWheels_btn.href)
+                    editWheels_btn.className = "button-link"
+
+                    let can = (parseInt(document.getElementById('userId').textContent) === veh.author_id ||
+                        parseInt(document.getElementById("userStatus").textContent) === 2 && veh.commonAccess)
+
+                    let editVehicle_btn = document.getElementById("editVehicle")
+                    let deleteVehicle_btn = document.getElementById("deleteVehicle")
+
+                    let btn_class = "button-link-disable"
+                    if (can) {
+                        editVehicle_btn.href = "/demo1/editVehicle?vehicle_id="+veh.id
+                        deleteVehicle_btn.href = "/demo1/deleteVehicle?vehicle_id="+veh.id
+                        btn_class = "button-link"
+                    } else {
+                        editVehicle_btn.href = ""
+                        deleteVehicle_btn.href = ""
+                    }
+
+                    editVehicle_btn.className = btn_class
+                    deleteVehicle_btn.className = btn_class
+
+
                 } else {
                     veh.selected = false
                 }

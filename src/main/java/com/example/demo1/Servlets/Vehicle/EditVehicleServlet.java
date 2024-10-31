@@ -64,6 +64,7 @@ public class EditVehicleServlet extends HttpServlet {
         float enginePower = 0;
         long distanceTravelled = 0, fuelConsumption = 0;
         int y_coords = 0, numberOfWheels = 0;
+        boolean commonAccess = true;
 
         try {
             x_coords = Double.parseDouble(request.getParameter("x_coords"));
@@ -130,13 +131,19 @@ public class EditVehicleServlet extends HttpServlet {
             error = "Расход топлива должен быть целым числом > 0 И <= 9223372036854775807";
         }
 
+        try {
+            commonAccess = Boolean.parseBoolean(request.getParameter("commonAccess"));
+        } catch (Exception e) {
+            error = "Как?";
+        }
+
         FuelType fuelType = FuelType.values()[Integer.parseInt(request.getParameter("fuelType"))];
 
         setAttributes(request, vehicle, coordinates);
 
         if (error == null) {
             if (coordinatesManager.editCoordinatesById(coordinates.getId(), x_coords, y_coords)) {
-                if (vehicleManager.editVehicleById(vehicle.getId(), name, vehicleType, enginePower, numberOfWheels, capacity, distanceTravelled, fuelConsumption, fuelType)) {
+                if (vehicleManager.editVehicleById(vehicle.getId(), name, vehicleType, enginePower, numberOfWheels, capacity, distanceTravelled, fuelConsumption, fuelType, commonAccess)) {
                     informationManager.createInformation(user.getId(), vehicle.getId(), TypeOfOperation.CHANGE);
                     request.setAttribute("error", "Вехикл успешно изменён");
                     doGet(request, response);
@@ -165,6 +172,7 @@ public class EditVehicleServlet extends HttpServlet {
         request.setAttribute("distanceTravelled", vehicle.getDistanceTravelled());
         request.setAttribute("fuelConsumption", vehicle.getFuelConsumption());
         request.setAttribute("fuelType", vehicle.getFuelType_id());
+        request.setAttribute("commonAccess", vehicle.isCommonAccess());
     }
 
     private Map<Class, Object> standardChecks(HttpServletRequest request, HttpServletResponse response, RequestDispatcher requestDispatcher) throws IOException, ServletException {
@@ -192,7 +200,7 @@ public class EditVehicleServlet extends HttpServlet {
         }
 
         if (user != null && vehicle != null) {
-            if (!(user.getStatus() == 2 || informationManager.checkUserIsAuthor(user.getId(), vehicle.getId()))) {
+            if (!(user.getStatus() == 2 && vehicle.isCommonAccess() || informationManager.checkUserIsAuthor(user.getId(), vehicle.getId()))) {
                 request.setAttribute("error", "Недостаточно прав для редактирования вехикла");
                 requestDispatcher.forward(request, response);
             }

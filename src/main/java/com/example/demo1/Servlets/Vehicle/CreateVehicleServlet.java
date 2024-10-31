@@ -47,6 +47,7 @@ public class CreateVehicleServlet extends HttpServlet {
         float enginePower = 0;
         long distanceTravelled = 0, fuelConsumption = 0;
         int y_coords = 0, numberOfWheels = 0;
+        boolean commonAccess = false;
 
         try {
             x_coords = Double.parseDouble(request.getParameter("x_coords"));
@@ -113,12 +114,19 @@ public class CreateVehicleServlet extends HttpServlet {
             error = "Расход топлива должен быть целым числом > 0 И <= 9223372036854775807";
         }
 
+        try {
+            commonAccess = Boolean.parseBoolean(request.getParameter("commonAccess"));
+            request.setAttribute("commonAccess", request.getParameter("commonAccess"));
+        } catch (Exception e) {
+            error = "Как?";
+        }
+
         FuelType fuelType = FuelType.values()[Integer.parseInt(request.getParameter("fuelType"))];
 
         if (error == null) {
             Long coordinates_id = coordinatesManager.createNewCoordinates(x_coords, y_coords);
             if (coordinates_id != null) {
-                Long vehicle_id = vehicleManager.createNewVehicle(name, coordinates_id, vehicleType, enginePower, numberOfWheels, capacity, distanceTravelled, fuelConsumption, fuelType);
+                Long vehicle_id = vehicleManager.createNewVehicle(name, coordinates_id, vehicleType, enginePower, numberOfWheels, capacity, distanceTravelled, fuelConsumption, fuelType, commonAccess);
                 if (vehicle_id != null) {
                     informationManager.createInformation(user.getId(), vehicle_id, TypeOfOperation.CREATE);
                     request.setAttribute("error", "Вехикл успешно создан");
