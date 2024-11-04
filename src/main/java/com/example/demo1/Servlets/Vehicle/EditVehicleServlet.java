@@ -19,6 +19,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -162,13 +163,13 @@ public class EditVehicleServlet extends HttpServlet {
     private void setAttributes(HttpServletRequest request, Vehicle vehicle, Coordinates coordinates) {
         request.setAttribute("listVehicleTypes", VehicleType.values());
         request.setAttribute("listFuelTypes", FuelType.values());
-        request.setAttribute("x_coords", coordinates.getX());
+        request.setAttribute("x_coords", BigDecimal.valueOf(coordinates.getX()).toPlainString());
         request.setAttribute("y_coords", coordinates.getY());
         request.setAttribute("name", vehicle.getName());
         request.setAttribute("vehicleType", vehicle.getVehicleType_id());
-        request.setAttribute("enginePower", vehicle.getEnginePower());
+        request.setAttribute("enginePower", BigDecimal.valueOf(vehicle.getEnginePower()).toPlainString());
         request.setAttribute("numberOfWheels", vehicle.getNumberOfWheels());
-        request.setAttribute("capacity", vehicle.getCapacity());
+        request.setAttribute("capacity", BigDecimal.valueOf(vehicle.getCapacity()).toPlainString());
         request.setAttribute("distanceTravelled", vehicle.getDistanceTravelled());
         request.setAttribute("fuelConsumption", vehicle.getFuelConsumption());
         request.setAttribute("fuelType", vehicle.getFuelType_id());
