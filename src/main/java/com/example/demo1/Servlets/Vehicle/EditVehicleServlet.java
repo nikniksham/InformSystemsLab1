@@ -69,8 +69,11 @@ public class EditVehicleServlet extends HttpServlet {
 
         try {
             x_coords = Double.parseDouble(request.getParameter("x_coords"));
+            if (Math.abs(x_coords) > 1E307) {
+                throw new Exception();
+            }
         } catch (Exception e) {
-            error = "X должно быть дробным числом и не превосходить по модулю 1.7*10^308";
+            error = "X должно быть дробным числом и не превосходить по модулю 1E+307";
         }
 
         try {
@@ -89,11 +92,11 @@ public class EditVehicleServlet extends HttpServlet {
 
         try {
             enginePower = Float.parseFloat(request.getParameter("enginePower"));
-            if (enginePower <= 0) {
+            if (enginePower <= 0 || enginePower > 1E37) {
                 throw new Exception();
             }
         } catch (Exception e) {
-            error = "Мощность двигателя должна быть дробным числом > 0 и < 3,40282346638528860e+38";
+            error = "Мощность двигателя должна быть дробным числом > 0 и < 1E37";
         }
 
         try {
@@ -107,11 +110,11 @@ public class EditVehicleServlet extends HttpServlet {
 
         try {
             capacity = Double.parseDouble(request.getParameter("capacity"));
-            if (capacity <= 0) {
+            if (capacity <= 0 || capacity > 1E307) {
                 throw new Exception();
             }
         } catch (Exception e) {
-            error = "Вместимость должна быть дробным числом > 0 И < 1.7*10^308";
+            error = "Вместимость должна быть дробным числом > 0 И < 1E+307";
         }
 
         try {
