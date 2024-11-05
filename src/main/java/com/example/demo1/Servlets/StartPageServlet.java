@@ -14,11 +14,7 @@ import java.io.IOException;
 
 @WebServlet(name = "startPageServlet", value = "/startPage")
 public class StartPageServlet extends HttpServlet {
-    @Inject
-    CommonFunc commonFunc;
-
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        commonFunc.setAuthorizedUser(request, response);
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("/startPage.jsp");
         requestDispatcher.forward(request, response);
     }

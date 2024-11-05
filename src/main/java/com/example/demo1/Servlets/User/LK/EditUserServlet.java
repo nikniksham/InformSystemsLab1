@@ -23,7 +23,6 @@ public class EditUserServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         commonFunc.redirectIfNotAuthorized(request, response);
-        commonFunc.setAuthorizedUser(request, response);
         request.setAttribute("login", commonFunc.getAuthorizedUser(request, response).getLogin());
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("/user/lk/editUser.jsp");
         requestDispatcher.forward(request, response);
@@ -31,7 +30,6 @@ public class EditUserServlet extends HttpServlet {
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         commonFunc.redirectIfNotAuthorized(request, response);
-        commonFunc.setAuthorizedUser(request, response);
         Users user = commonFunc.getAuthorizedUser(request, response);
         if (usersManager.editUser(request.getParameter("new_login"), user)) {
             response.sendRedirect(commonFunc.getLink("/personalInformation"));

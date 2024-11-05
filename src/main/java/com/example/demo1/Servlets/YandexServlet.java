@@ -13,18 +13,14 @@ import java.io.IOException;
 @WebServlet(name = "yandexServlet", value = "/yandex")
 public class YandexServlet extends HttpServlet {
     @Inject
-    CommonFunc commonFunc;
-    @Inject
     VehicleManager vehicleManager;
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        commonFunc.setAuthorizedUser(request, response);
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("yandex.jsp");
         requestDispatcher.forward(request, response);
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        commonFunc.setAuthorizedUser(request, response);
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("yandex.jsp");
         String sample = request.getParameter("sample"), error=null;
         boolean is_start = false;

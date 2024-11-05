@@ -24,7 +24,6 @@ public class MainPageServlet extends HttpServlet {
 
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        commonFunc.setAuthorizedUser(request, response);
         Long last_id = null, oper=null;
         try {
             last_id = Long.parseLong(request.getParameter("last_id"));

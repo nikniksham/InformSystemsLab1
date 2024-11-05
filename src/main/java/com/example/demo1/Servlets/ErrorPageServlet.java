@@ -13,10 +13,7 @@ import java.io.IOException;
 
 @WebServlet(name = "errorPageServlet", value = "/errorPage")
 public class ErrorPageServlet extends HttpServlet {
-    @Inject
-    CommonFunc commonFunc;
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        commonFunc.setAuthorizedUser(request, response);
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("errorPage.jsp");
         requestDispatcher.forward(request, response);
     }

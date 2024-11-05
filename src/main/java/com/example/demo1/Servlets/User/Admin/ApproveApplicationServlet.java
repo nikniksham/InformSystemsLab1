@@ -20,14 +20,12 @@ public class ApproveApplicationServlet extends HttpServlet {
     CommonFunc commonFunc;
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         commonFunc.redirectIfNotAuthorized(request, response);
-        commonFunc.setAuthorizedUser(request, response);
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("/user/admin/approveApplication.jsp");
         requestDispatcher.forward(request, response);
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         commonFunc.redirectIfNotAuthorizedAdmin(request, response);
-        commonFunc.setAuthorizedUser(request, response);
         String error = null;
         Long user_id = null;
         try {

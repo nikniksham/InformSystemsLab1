@@ -22,14 +22,12 @@ public class EditPasswordServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         commonFunc.redirectIfNotAuthorized(request, response);
-        commonFunc.setAuthorizedUser(request, response);
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("/user/lk/editPassword.jsp");
         requestDispatcher.forward(request, response);
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         commonFunc.redirectIfNotAuthorized(request, response);
-        commonFunc.setAuthorizedUser(request, response);
         Users user = commonFunc.getAuthorizedUser(request, response);
         String error = null;
         if (!usersManager.checkPasswordUser(request.getParameter("old_password"), user)) {

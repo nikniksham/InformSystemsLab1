@@ -20,14 +20,12 @@ public class ApplicationServlet extends HttpServlet {
     CommonFunc commonFunc;
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         commonFunc.redirectIfNotAuthorized(request, response);
-        commonFunc.setAuthorizedUser(request, response);
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("/user/lk/application.jsp");
         requestDispatcher.forward(request, response);
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         commonFunc.redirectIfNotAuthorized(request, response);
-        commonFunc.setAuthorizedUser(request, response);
         if (usersManager.submitAnApplication(commonFunc.getAuthorizedUser(request, response))) {
             response.sendRedirect(commonFunc.getLink("/personalInformation"));
         }

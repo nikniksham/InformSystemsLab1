@@ -24,7 +24,6 @@ public class AdminPanelServlet extends HttpServlet {
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         commonFunc.redirectIfNotAuthorizedAdmin(request, response);
-        commonFunc.setAuthorizedUser(request, response);
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("/user/admin/adminPanel.jsp");
         request.setAttribute("usersList", usersManager.getAllUsers());
         requestDispatcher.forward(request, response);

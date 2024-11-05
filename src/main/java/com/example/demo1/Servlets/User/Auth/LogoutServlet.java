@@ -20,14 +20,12 @@ public class LogoutServlet extends HttpServlet {
     CommonFunc commonFunc;
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         commonFunc.redirectIfNotAuthorized(request, response);
-        commonFunc.setAuthorizedUser(request, response);
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("/user/auth/logout.jsp");
         requestDispatcher.forward(request, response);
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         commonFunc.redirectIfNotAuthorized(request, response);
-        commonFunc.setAuthorizedUser(request, response);
         tokenManager.deleteTokenByCode(tokenManager.getAuthCode(request.getCookies()));
         doGet(request, response);
     }

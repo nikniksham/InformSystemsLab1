@@ -25,14 +25,12 @@ public class AddWheelsServlet extends HttpServlet {
     CommonFunc commonFunc;
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         commonFunc.redirectIfNotAuthorized(request, response);
-        commonFunc.setAuthorizedUser(request, response);
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("/vehicle/addWheels.jsp");
         requestDispatcher.forward(request, response);
     }
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         commonFunc.redirectIfNotAuthorized(request, response);
-        commonFunc.setAuthorizedUser(request, response);
         Users user = commonFunc.getAuthorizedUser(request, response);
         String error = null;
         Long vehicle_id = null;
