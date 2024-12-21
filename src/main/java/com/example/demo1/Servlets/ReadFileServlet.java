@@ -46,16 +46,20 @@ public class ReadFileServlet extends HttpServlet {
         }
 
         if (filename != null) {
-            String filepath = getServletContext().getRealPath("") + File.separator + "DATA" + File.separator + filename;
-            if (new File(filepath).exists()) {
-                try {
-                    String content = new String(Files.readAllBytes(Paths.get(filepath)));
-                    Type listType = new TypeToken<ArrayList<GSONVehicle>>() {}.getType();
-                    objects = gson.fromJson(content, listType);
-                    result = vehicleManager.createListOfVehicles(objects, user_id);
-                } catch (Exception e) {
-                    error = "Ошибка при конвертации .json файла -> " + e.getMessage();
+            if (filename.endsWith(".json")) {
+                String filepath = getServletContext().getRealPath("") + File.separator + "DATA" + File.separator + filename;
+                if (new File(filepath).exists()) {
+                    try {
+                        String content = new String(Files.readAllBytes(Paths.get(filepath)));
+                        Type listType = new TypeToken<ArrayList<GSONVehicle>>() {}.getType();
+                        objects = gson.fromJson(content, listType);
+                        result = vehicleManager.createListOfVehicles(objects, user_id);
+                    } catch (Exception e) {
+                        error = "Ошибка при конвертации .json файла -> " + e.getMessage();
+                    }
                 }
+            } else {
+                error = "Переданный файл должен быть с разрешением .json";
             }
         }
 
@@ -68,8 +72,10 @@ public class ReadFileServlet extends HttpServlet {
             count = objects.size();
         }
 
-        if (!importLogsManager.createImportLog(user_id, filename, suc, count) ) {
-            error = "Падла не создал лог";
+        if (filename != null && filename.endsWith(".json")) {
+            if (!importLogsManager.createImportLog(user_id, filename, suc, count)) {
+                error = "Падла не создал лог";
+            }
         }
 
         request.setAttribute("result", result);

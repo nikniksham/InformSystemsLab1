@@ -16,7 +16,7 @@
 <jsp:include page="/shablons/header.jsp"/>
 <%
   out.println((request.getAttribute("result") == null) ? "" : request.getAttribute("result"));
-%>
+%><br>
 <%
   out.println((request.getAttribute("error") == null) ? "" : request.getAttribute("error"));
 %>

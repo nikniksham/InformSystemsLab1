@@ -15,13 +15,16 @@
 <body>
 <jsp:include page="/shablons/header.jsp"/>
 <form method="post" enctype="multipart/form-data">
-    Choose a file: <input type="file" name="multiPartServlet" />
+    Choose a file: <input type="file" name="multiPartServlet" accept=".json" />
     <input type="submit" value="Upload" />
 <%
     if (request.getAttribute("filename") != null) {
         out.println("<p>Файл успешно загружен</p>");
         out.println("<a class=\"button-link\" href=\"/demo1/readFile?filename=" + request.getAttribute("filename") + "\">Создать объекты</a>");
     }
+%>
+<%
+    out.println((request.getAttribute("error") == null) ? "" : request.getAttribute("error"));
 %>
 </form>
 <jsp:include page="/shablons/footer.jsp"/>

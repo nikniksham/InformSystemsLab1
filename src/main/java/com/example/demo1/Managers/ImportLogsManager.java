@@ -17,7 +17,7 @@ public class ImportLogsManager {
 
     public boolean createImportLog(long user_id, String filename, boolean result, int count) {
         EntityManager em = emf.createEntityManager();
-//        try {
+        try {
             em.getTransaction().begin();
 
             ImportLogs new_log = new ImportLogs();
@@ -32,10 +32,10 @@ public class ImportLogsManager {
             em.close();
 
             return true;
-//        } catch (Exception e) {
-//            em.close();
-//            return false;
-//        }
+        } catch (Exception e) {
+            em.close();
+            return false;
+        }
     }
 
     public List<ImportLogs> getAllLogsPropUser(long user_id) {
