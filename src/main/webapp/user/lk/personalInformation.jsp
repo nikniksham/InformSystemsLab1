@@ -21,6 +21,8 @@
 
   out.println("<a class=\"button-link\" href=\"/demo1/editPassword\">Изменить пароль</a><br>");
 
+  out.println("<a class=\"button-link\" href=\"/demo1/showImportLogs\">Посмотреть логи загрузки</a><br>");
+
   if (user.getStatus() == 2) {
     out.println("<a class=\"button-link\" href=\"/demo1/adminPanel\">Админская панель</a><br>");
   }
