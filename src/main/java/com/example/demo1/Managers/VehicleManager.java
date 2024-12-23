@@ -1,9 +1,12 @@
 package com.example.demo1.Managers;
 
+import com.example.demo1.DBObjects.Information;
 import com.example.demo1.DBObjects.Users;
 import com.example.demo1.DBObjects.Vehicle;
+import com.example.demo1.DBObjects.Coordinates;
 import com.example.demo1.ENUMs.FuelType;
 import com.example.demo1.ENUMs.VehicleType;
+import com.example.demo1.GSONObjects.GSONVehicle;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
@@ -257,5 +260,77 @@ public class VehicleManager {
             em.close();
             return null;
         }
+    }
+
+    public String createListOfVehicles(List<GSONVehicle> objects, long user_id) {
+        String result = "";
+        EntityManager em = emf.createEntityManager();
+        em.getTransaction().begin();
+        if (objects.size() > 0) {
+            try {
+                int num = 1;
+                for (GSONVehicle obj : objects) {
+                    Coordinates new_coordinates = new Coordinates();
+                    new_coordinates.setX(obj.getX());
+                    new_coordinates.setY(obj.getY());
+                    em.persist(new_coordinates);
+
+                    Vehicle new_vehicle = new Vehicle();
+                    if (obj.getName().length() == 0) {
+                        throw new Exception("Объект #" + num + ", длина имени должна быть хотя бы 1 симовл");
+                    }
+                    new_vehicle.setName(obj.getName());
+                    new_vehicle.setCoordinates_id(new_coordinates.getId());
+                    new_vehicle.setCreationDate(new Timestamp(new java.util.Date().getTime()));
+                    if (obj.getVehicleType_id() < 0 && obj.getVehicleType_id() >= VehicleType.values().length) {
+                        throw new Exception("Объект #" + num + ", vehicleType должно быть в пределах [0; "+VehicleType.values().length+")");
+                    }
+                    new_vehicle.setVehicleType_id(obj.getVehicleType_id());
+                    if (obj.getEnginePower() <= 0) {
+                        throw new Exception("Объект #" + num + ", enginePower должен быть > 0");
+                    }
+                    new_vehicle.setEnginePower(obj.getEnginePower());
+                    if (obj.getNumberOfWheels() <= 0) {
+                        throw new Exception("Объект #" + num + ", numberOfWheels должен быть > 0");
+                    }
+                    new_vehicle.setNumberOfWheels(obj.getNumberOfWheels());
+                    if (obj.getCapacity() <= 0) {
+                        throw new Exception("Объект #" + num + ", capacity должно быть > 0");
+                    }
+                    new_vehicle.setCapacity(obj.getCapacity());
+                    if (obj.getDistanceTravelled() <= 0) {
+                        throw new Exception("Объект #" + num + ", distanceTravelled должно быть > 0");
+                    }
+                    new_vehicle.setDistanceTravelled(obj.getDistanceTravelled());
+                    if (obj.getFuelConsumption() <= 0) {
+                        throw new Exception("Объект #" + num + ", fuelConsumption должен быть > 0");
+                    }
+                    new_vehicle.setFuelConsumption(obj.getFuelConsumption());
+                    if (obj.getFuelType_id() < 0 && obj.getFuelType_id() >= FuelType.values().length) {
+                        throw new Exception("Объект #" + num + ", FuelType должно быть в пределах [0; "+ FuelType.values().length+")");
+                    }
+                    new_vehicle.setFuelType_id(obj.getFuelType_id());
+                    new_vehicle.setCommonAccess(obj.isCommonAccess());
+                    em.persist(new_vehicle);
+
+                    Information new_information = new Information();
+                    new_information.setUser_id(user_id);
+                    new_information.setVehicle_id(new_vehicle.getId());
+                    new_information.setTypeOfOperation(0);
+                    new_information.setModifDate(new Timestamp(new java.util.Date().getTime()));
+                    em.persist(new_information);
+
+                    num++;
+                }
+                em.getTransaction().commit();
+            } catch (Exception e) {
+                em.getTransaction().rollback();
+                result = "Ошибка -> " + e.getMessage();
+            }
+        } else {
+            result = "Файл с объектами без объектов";
+        }
+        em.close();
+        return result;
     }
 }

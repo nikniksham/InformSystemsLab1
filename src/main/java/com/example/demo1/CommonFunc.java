@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.Random;
 
 @ApplicationScoped
 public class CommonFunc {
@@ -17,9 +18,21 @@ public class CommonFunc {
     @Inject
     private UsersManager usersManager;
     private String baza = "/demo1";
+    private final Random rng = new Random(72382);
+
 
     public String getLink(String direct) {
         return baza + direct;
+    }
+
+    public String generateName(int length)
+    {
+        String characters = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM0123456789";
+        char[] code = new char[length];
+        for (int i = 0; i < length; i++) {
+            code[i] = characters.charAt(rng.nextInt(characters.length()));
+        }
+        return new String(code);
     }
 
     public Users getAuthorizedUser(HttpServletRequest request, HttpServletResponse response) {
