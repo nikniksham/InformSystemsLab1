@@ -1,0 +1,44 @@
+[
+  {
+    "name": "1111111111111",
+    "x": 250,
+    "y": 150,
+    "creationDate": "Oct 22, 2024, 4:51:26?PM",
+    "vehicleType_id": 2,
+    "enginePower": 124.0,
+    "numberOfWheels": 12,
+    "capacity": -521.0,
+    "distanceTravelled": 215,
+    "fuelConsumption": 521,
+    "fuelType_id": 0,
+    "commonAccess": false
+  },
+  {
+    "name": "2222222222222222",
+    "x": -250,
+    "y": 150,
+    "creationDate": "Oct 22, 2024, 4:51:57?PM",
+    "vehicleType_id": 5,
+    "enginePower": 249.0,
+    "numberOfWheels": 4,
+    "capacity": 4.0,
+    "distanceTravelled": 80000,
+    "fuelConsumption": 12,
+    "fuelType_id": 3,
+    "commonAccess": false
+  },
+  {
+    "name": "3333333333333",
+    "x": 250,
+    "y": -150,
+    "creationDate": "Oct 23, 2024, 2:24:25?PM",
+    "vehicleType_id": 0,
+    "enginePower": 21.0,
+    "numberOfWheels": 23,
+    "capacity": 53.0,
+    "distanceTravelled": 32,
+    "fuelConsumption": 32,
+    "fuelType_id": 0,
+    "commonAccess": false
+  }
+]

@@ -1,10 +1,12 @@
 package com.example.demo1.GSONObjects;
 import lombok.Getter;
+import lombok.NonNull;
 import lombok.Setter;
 
 @Getter
 @Setter
 public class GSONVehicle {
+    @NonNull
     private String name;
     private double x;
     private int y;

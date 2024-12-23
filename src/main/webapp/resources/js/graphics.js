@@ -125,7 +125,7 @@ class Grid {
     }
 
     set_elems(data) {
-        console.log(data)
+        // console.log(data)
         this.elems = []
         let vehicles = data["Vehicles"]
         let coordinates = data["Coordinates"]
