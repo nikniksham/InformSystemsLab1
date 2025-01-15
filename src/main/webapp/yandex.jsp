@@ -41,7 +41,7 @@
         <button type="submit">Найти</button>
     </form>
     <%
-        out.println((request.getAttribute("error") == null) ? "" : request.getAttribute("error"));
+        out.println((request.getAttribute("error") == null) ? "" : "<res>" + request.getAttribute("error") + "</res>");
     %>
 </div>
 

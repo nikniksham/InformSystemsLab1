@@ -132,6 +132,7 @@ public class CreateVehicleServlet extends HttpServlet {
                 if (vehicle_id != null) {
                     informationManager.createInformation(user.getId(), vehicle_id, TypeOfOperation.CREATE);
                     request.setAttribute("error", "Вехикл успешно создан");
+                    request.setAttribute("vehicle_id", vehicle_id);
                     doGet(request, response);
                 } else {
                     coordinatesManager.deleteCoordinatesById(coordinates_id);

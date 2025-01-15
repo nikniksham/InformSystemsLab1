@@ -15,10 +15,10 @@
 <body>
 <jsp:include page="/shablons/header.jsp"/>
 <%
-  out.println((request.getAttribute("result") == null) ? "" : request.getAttribute("result"));
+  out.println((request.getAttribute("result") == null) ? "" : "<sam>" + request.getAttribute("result") + "</sam>");
 %><br>
 <%
-  out.println((request.getAttribute("error") == null) ? "" : request.getAttribute("error"));
+  out.println((request.getAttribute("error") == null) ? "" : "<res>" + request.getAttribute("error") + "</res>");
 %>
 <jsp:include page="/shablons/footer.jsp"/>
 </body>

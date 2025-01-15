@@ -57,6 +57,8 @@ public class ReadFileServlet extends HttpServlet {
                     } catch (Exception e) {
                         error = "Ошибка при конвертации .json файла -> " + e.getMessage();
                     }
+                } else {
+                    error = "Файл не существует";
                 }
             } else {
                 error = "Переданный файл должен быть с разрешением .json";

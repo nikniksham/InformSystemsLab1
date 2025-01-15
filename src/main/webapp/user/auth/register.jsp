@@ -23,7 +23,7 @@
         <button type="submit">Регистрация</button>
     </form>
     <%
-        out.println((request.getAttribute("error") == null) ? "" : request.getAttribute("error"));
+        out.println((request.getAttribute("error") == null) ? "" : "<res>" + request.getAttribute("error") + "</res>");
     %>
     <a class="button-link" href="/demo1/login">Войти</a>
 </div>

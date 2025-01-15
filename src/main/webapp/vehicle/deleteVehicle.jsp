@@ -18,7 +18,7 @@
         <button type="submit">Удалить вехикл</button>
     </form>
     <%
-        out.println((request.getAttribute("error") == null) ? "" : request.getAttribute("error"));
+        out.println((request.getAttribute("error") == null) ? "" : "<res>" + request.getAttribute("error") + "</res>");
     %>
 </div>
 <jsp:include page="/shablons/footer.jsp"/>

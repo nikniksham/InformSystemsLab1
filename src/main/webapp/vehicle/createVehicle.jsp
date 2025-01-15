@@ -84,7 +84,8 @@
         <button type="submit">Создать вехикл</button>
     </form>
     <%
-        out.println((request.getAttribute("error") == null) ? "" : request.getAttribute("error"));
+        out.println((request.getAttribute("error") == null) ? "" : "<res>" + request.getAttribute("error") + "</res>");
+        out.println((request.getAttribute("vehicle_id") == null) ? "" : "<veh_id>" + request.getAttribute("vehicle_id") + "</veh_id>");
     %>
 </div>
 <jsp:include page="/shablons/footer.jsp"/>

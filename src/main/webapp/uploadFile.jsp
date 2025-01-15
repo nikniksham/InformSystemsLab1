@@ -24,7 +24,7 @@
     }
 %>
 <%
-    out.println((request.getAttribute("error") == null) ? "" : request.getAttribute("error"));
+    out.println((request.getAttribute("error") == null) ? "" : "<res>" + request.getAttribute("error") + "</res>");
 %>
 </form>
 <jsp:include page="/shablons/footer.jsp"/>
