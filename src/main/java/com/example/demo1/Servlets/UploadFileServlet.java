@@ -1,5 +1,6 @@
 package com.example.demo1.Servlets;
 import com.example.demo1.CommonFunc;
+import com.example.demo1.MinioConfig;
 import jakarta.inject.Inject;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
@@ -9,11 +10,15 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Paths;
 import java.util.Objects;
+import java.nio.file.Path;
 
 @MultipartConfig
 @WebServlet(name = "uploadFileServlet", value = "/uploadFile")
@@ -48,6 +53,21 @@ public class UploadFileServlet extends HttpServlet {
             for (Part part : request.getParts()) {
                 part.write(uploadPath + File.separator + filename);
             }
+        }
+
+        if (!filename.equals("")) {
+            S3Client s3Client = MinioConfig.createMinioClient();
+
+            Path filePath = Paths.get(uploadPath + File.separator + filename);
+
+            // Загрузка файла
+            s3Client.putObject(PutObjectRequest.builder()
+                            .bucket(MinioConfig.bucketName)
+                            .key(filename)
+                            .build(),
+                    filePath);
+
+            error = "Файл успешно загружен в MinIO!";
         }
 
         request.setAttribute("filename", filename);
