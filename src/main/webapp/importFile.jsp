@@ -18,10 +18,6 @@
     Choose a file: <input type="file" name="multiPartServlet" accept=".json" />
     <input type="submit" value="Upload" />
     <%
-        out.println((request.getAttribute("result") == null) ? "" : "<sam>" + request.getAttribute("result") + "</sam>");
-    %>
-<%--    <h3>----------------------------------</h3>--%>
-    <%
         out.println((request.getAttribute("error") == null) ? "" : "<res>" + request.getAttribute("error") + "</res>");
     %>
 </form>

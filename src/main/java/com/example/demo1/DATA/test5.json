@@ -1,0 +1,29 @@
+[
+  {
+    "x": 400,
+    "y": 400,
+    "name": "SKAZKA",
+    "vehicleType_id": 1,
+    "enginePower": 66666.0,
+    "numberOfWheels": 66666,
+    "capacity": 66666.0,
+    "distanceTravelled": 666661,
+    "fuelConsumption": 66666,
+    "fuelType_id": 2,
+    "commonAccess": true
+  },
+  {
+    "x": -400,
+    "y": -400,
+    "name": "PESNYA",
+    "vehicleType_id": 1,
+    "enginePower": 214.0,
+    "numberOfWheels": 3153236,
+    "capacity": 124.0,
+    "distanceTravelled": 124,
+    "fuelConsumption": 421,
+    "fuelType_id": 2,
+    "commonAccess": true
+  }
+]
+

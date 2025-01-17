@@ -32,7 +32,7 @@
                         out.println("<tr>");
                         out.println("<td>" + log.getId() + "</td>");
                         out.println("<td>" + log.getUser_id() + "</td>");
-                        out.println("<td>" + log.getFilename() + "</td>");
+                        out.println("<td>" + "<a href=\"/demo1/downloadFile?filename=" + log.getFilename() + "\">" + log.getFilename() + "</a>" + "</td>");
                         out.println("<td>" + log.isResult() + "</td>");
                         out.println("<td>" + log.getCreationDate() + "</td>");
                         out.println("<td>" + log.getCount() + "</td>");

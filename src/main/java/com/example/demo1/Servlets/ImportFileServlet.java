@@ -50,7 +50,6 @@ public class ImportFileServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         commonFunc.redirectIfNotAuthorized(request, response);
         String error = "";
-        String result = "";
         String filename = "";
         int count = 0;
         long user_id = commonFunc.getAuthorizedUser(request, response).getId();
@@ -107,7 +106,7 @@ public class ImportFileServlet extends HttpServlet {
                             .key(filename)
                             .build());
                 } else {
-                    result = "Все объекты успешно добавлены";
+                    error = "Все объекты успешно добавлены";
                     if (!importLogsManager.createImportLog(user_id, filename, true, count)) {
                         error = "Падла не создал лог";
                     }
@@ -127,7 +126,6 @@ public class ImportFileServlet extends HttpServlet {
         }
 
         request.setAttribute("filename", filename);
-        request.setAttribute("result", result);
         request.setAttribute("error", error);
 
         RequestDispatcher requestDispatcher = request.getRequestDispatcher("importFile.jsp");
