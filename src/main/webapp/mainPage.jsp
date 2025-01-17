@@ -110,7 +110,7 @@
         out.println("<a class=\"button-link\" href=\"/demo1/createVehicle\"> Создать вехикл </a><br>");
     }
 %>
-<a class="button-link" href="uploadFile">Загрузить файл с объектами</a><br>
+<a class="button-link" href="importFile">Загрузить файл с объектами</a><br>
 
 <jsp:include page="/shablons/footer.jsp"/>
 </body>

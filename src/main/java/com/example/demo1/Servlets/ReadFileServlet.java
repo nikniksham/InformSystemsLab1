@@ -5,6 +5,7 @@ import com.example.demo1.GSONObjects.GSONVehicle;
 import com.example.demo1.Managers.ImportLogsManager;
 import com.example.demo1.Managers.TokenManager;
 import com.example.demo1.Managers.VehicleManager;
+import com.example.demo1.MinioConfig;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import jakarta.inject.Inject;
@@ -14,11 +15,16 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.endpoints.internal.Value;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+
 import java.lang.reflect.Type;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +37,29 @@ public class ReadFileServlet extends HttpServlet {
     CommonFunc commonFunc;
     @Inject
     ImportLogsManager importLogsManager;
+
+    private String downloadFile(String filename, String filepath) {
+        S3Client s3Client = MinioConfig.createMinioClient();
+        String result = "Ok";
+        try {
+            // Укажите запрос на получение файла
+            GetObjectRequest getObjectRequest = GetObjectRequest.builder()
+                    .bucket(MinioConfig.bucketName)
+                    .key(filename)
+                    .build();
+
+            // Скачайте файл в указанное место
+            s3Client.getObject(getObjectRequest,
+                    Paths.get(filepath));
+
+            result = "Файл успешно загружен";
+        } catch (Exception e) {
+            result = "Ошибка при загрузке файла -> " + e.getMessage();
+        } finally {
+            s3Client.close();
+        }
+        return result;
+    }
 
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         commonFunc.redirectIfNotAuthorized(request, response);
@@ -48,6 +77,7 @@ public class ReadFileServlet extends HttpServlet {
         if (filename != null) {
             if (filename.endsWith(".json")) {
                 String filepath = getServletContext().getRealPath("") + File.separator + "DATA" + File.separator + filename;
+                downloadFile(filename, filepath);
                 if (new File(filepath).exists()) {
                     try {
                         String content = new String(Files.readAllBytes(Paths.get(filepath)));
@@ -59,6 +89,11 @@ public class ReadFileServlet extends HttpServlet {
                     }
                 } else {
                     error = "Файл не существует";
+                }
+                try {
+                    Files.delete(Paths.get(filepath));
+                } catch (Exception e) {
+//                    error = "файл не удалился?";
                 }
             } else {
                 error = "Переданный файл должен быть с разрешением .json";
